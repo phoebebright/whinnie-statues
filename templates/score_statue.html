@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% blocktrans %}Score Statue{% endblocktrans %}{% endblock %}
+
+{% block main %}
+
+    <div class="container py-4">
+    <header class="pb-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center ">
+
+            <span class="fs-4">What about this one?</span>
+        </a>
+    </header>
+
+    <input id="pk" type="hidden" value="{{ statue.pk }}">
+    <div class="row ">
+        <div class="col">
+            <h3>{{ statue.name }}</h3>
+            <p>{{ statue.scultor }}, {{ statue.year }},  {{ statue.country }}, {{ statue.location }}</p>
+        </div>
+
+        <div class="row align-items-md-stretch">
+            <div class="col-md-6">
+                <div class="h-100 p-5 text-white rounded-3">
+                    {% if statue.main_image_url %}
+                        <img src="{{ statue.main_image_url }}">
+                    {% else %}
+                        <p>
+                            <a href="{{ statue.details_url }}" class="btn btn-primary"  onclick="$(this).closest('tr').addClass('highlight');window.open('{{ statue.details_url }}', '{{ statue.name }}', 'width=1500,height=1500'); return false;">Show Details...</a></p>
+                        <div class="mb-3">
+                            <label for="main_image" class="form-label">Main Image Address</label>
+                            <input id="main_image" type="url" class="form-control main_image" value="{{ statue.main_image_url }}">
+                        </div>
+                        <div class="mb-3">
+                            <p><a href="/admin/web/statue/{{ statue.pk }}" target="_blank">Admin</a></p>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="h-100 p-5 bg-light border rounded-3">
+                    <div class="mb-3">
+                        <label for="happy_horse" class="form-label">Unhappy=-1 Happy=1</label>
+                        <input type="range" class="form-range" min="-1" max="1" id="happy_horse" value="{{statue.happy_horse}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="servant-partner" class="form-label">Servant=0 Partner=10</label>
+                        <input type="range" class="form-range" min="0" max="10" id="servant-partner" value="{% if statue.servant_partner < 11 %}{{ statue.servant_partner }}{% endif %}" >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="{% url "score_statue" %}" class="btn btn-primary" type="button">Next...</a>
+
+    </div>
+
+    </form>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        $(document).on("change", ".main_image", function() {
+            var pk = $("#pk").val();
+            var payload = {'main_image_url': $(this).val()};
+            update_statue(pk, payload);
+
+        });
+
+        $(document).on("change", "#servant-partner", function() {
+            var pk = $("#pk").val();
+            var payload = {'servant_partner': $(this).val()};
+            update_statue(pk, payload);
+        });
+        $(document).on("change", "#happy_horse", function() {
+            var pk = $("#pk").val();
+            var payload = {'happy_horse': $(this).val()};
+            update_statue(pk, payload);
+        });
+        $(document).on("change", ".skip", function() {
+            var pk = $("#pk").val();
+            var payload = {'skip': this.checked};
+            update_statue(pk, payload);
+        });
+
+        function update_statue(pk, payload) {
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                method: "PATCH",
+                url:  "/api/statues/" + pk +"/",
+                data: payload,
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                },
+            });
+
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block title %}{% trans "How we use Cookies" %}{% endblock %}
+
+
+{% block outer %}
+
+
+    <div class="container mb-5">
+
+        <div id="cwrapper">
+            <style>
+                #cwrapper p {
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                }
+            </style>
+            <h1>Cookies and {{SITE_NAME}}</h1>
+
+            <h3 class="page_title">Definition and uses of cookies in this site</h3>
+            <p>A cookie is a small text file that’s stored on your computer or mobile device when you visit a website. We use them to:</p>
+
+            <ul>
+                {% if not DC_MODE %}
+                    <li>Keep you logged in</li>
+                {% endif %}
+                <li>Remember your preferences.</li>
+                <li>Store data on tests and events to avoid multiple downloads</li>
+            </ul>
+
+
+            <h3>What kind of cookies does this website use?</h3>
+
+            <p>First party cookies: These are set by the website when you use the calculator. Only this website can read them.</p>
+
+            <p>Session cookies: These are stored while you’re browsing. They get deleted from your device when you close your browser e.g. Internet Explorer or Safari.</p>
+
+            <p>Third party cookies (Google Analytics and Hotjar): These are set by someone other than the owner of the website you’re visiting.</p>
+
+            <p>Google Analytics is the tool which helps website and the owners of applications to understand the way in which their visitors interact with them. GA can use some cookies to collect statistical information regarding the user behaviour without personally identifying the users. We do not use the remarketing options of Google Analytics.</p>
+
+            <p>For more information on the cookies Google Analytics uses see <a href="https://developers.google.com/analytics/devguides/list-group/analyticsjs/cookie-usage" target="_blank">https://developers.google.com/analytics/devguides/list-group/analyticsjs/cookie-usage</a></p>
+
+            <p>If you do not want Google collecting your data, you can opt-out.  Find out more here: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">https://tools.google.com/dlpage/gaoptout</a>
+
+
+            <h3>Rejection or elimination of cookies</h3>
+
+            You can allow, block or delete the cookies installed on your computer through your browser’s settings options, in which case you may not be able to access certain areas of the website. If you wish to know how to manage your browser’s cookies, please access the following links:
+
+            <ul class="browsers-list">
+                <li>
+                    <a href="https://support.google.com/chrome/answer/95647?hl=en">
+                        Google Chrome
+                    </a>
+                </li>
+                <li>
+                    <a href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">
+                        Firefox
+                    </a>
+                </li>
+                <li>
+                    <a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies#">
+                        Internet Explorer
+                    </a>
+                </li>
+                <li>
+                    <a href="https://support.apple.com/kb/PH17191?locale=es_ES&amp;viewlocale=en_US">
+                        Safari
+                    </a>
+                </li>
+                <li>
+                    <a href="http://help.opera.com/Windows/11.50/en/cookies.html">
+                        Opera
+                    </a>
+                </li>
+            </ul>
+
+            <p>If you wish to have more information regarding the use of cookies on this site, you can <a href="{% url "contact" %}">request it here</a>.</p>
+
+
+
+
+        </div>
+    </div>
+
+    <p>Cookie Policy Text   We at ………………Limited (“DressageCalculator”) recognise the importance of protecting personal and confidential information in all that we do.</p>
+    1. Introduction
+    Our website uses cookies.  Insofar as those cookies are not strictly necessary for the provision of our website and services, we will ask you to consent to our use of cookies when you first visit our website.</p>
+
+Cookie Policy Text
+
+We at ………………Limited (“DressageCalculator”) recognise the importance of protecting personal and confidential information in all that we do.
+
+1.  	Introduction
+1.1	Our website uses cookies.
+1.2	Insofar as those cookies are not strictly necessary for the provision of our website and services, we will ask you to consent to our use of cookies when you first visit our website.
+
+2.  	About cookies
+2.1	A cookie is a file containing an identifier (a string of letters and numbers) that is sent by a web server to a web browser and is stored by the browser. The identifier is then sent back to the server each time the browser requests a page from the server.
+2.2	Cookies may be either "persistent" cookies or "session" cookies: a persistent cookie will be stored by a web browser and will remain valid until its set expiry date, unless deleted by the user before the expiry date; a session cookie, on the other hand, will expire at the end of the user session, when the web browser is closed.
+2.3	Cookies may not contain any information that personally identifies a user, but personal data that we store about you may be linked to the information stored in and obtained from cookies.
+3.  	Cookies that we use
+3.1	We use cookies for the following purposes:
+(a)	authentication and status - we use cookies to identify you when you visit our website and as you navigate our website, and to help us determine if you are logged into our website.
+(b)	shopping cart - we use cookies to maintain the state of your shopping cart as you navigate our website.
+(c)	personalisation - we use cookies to store information about your preferences and to personalise our website for you.
+(d)	security - we use cookies as an element of the security measures used to protect user accounts, including preventing fraudulent use of login credentials, and to protect our website and services generally.
+(e)	advertising - we use cookies to help us to display advertisements that will be relevant to you.
+(f)	analysis - we use cookies to help us to analyse the use and performance of our website and services.
+(g)	cookie consent - we use cookies to store your preferences in relation to the use of cookies more generally.
+4.  	Cookies used by our service providers
+4.1	Our service providers use cookies and those cookies may be stored on your computer when you visit our website.
+4.2	We use Google Analytics. Google Analytics gathers information about the use of our website by means of cookies. The information gathered is used to create reports about the use of our website. You can find out more about Google's use of information by visiting https://www.google.com/policies/privacy/partners/ and you can review Google's privacy policy at https://policies.google.com/privacy.
+5.  	Managing cookies
+5.1	Most browsers allow you to refuse to accept cookies and to delete cookies.
+    	The methods for doing so vary from browser to browser, and from version to version.
+    	You can however obtain up-to-date information about blocking and deleting cookies via these links:
+(a)	https://support.google.com/chrome/answer/95647 (Chrome);
+(b)	https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences (Firefox);
+(c)	https://help.opera.com/en/latest/security-and-privacy/ (Opera);
+(d)	https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies (Internet Explorer);
+(e)	https://support.apple.com/en-gb/guide/safari/manage-cookies-and-website-data-sfri11471/mac (Safari); and
+(f)	https://privacy.microsoft.com/en-us/windows-10-microsoft-edge-and-privacy (Edge).
+5.2	Blocking all cookies will have a negative impact upon the usability of many websites.
+5.3	If you block cookies, you will not be able to use all the features on our website.
+6.  	Our details
+6.1	This website is owned and operated by ……………………Limited, an Irish incorporated company and we are located at ………………. Co. Cork, Ireland.
+6.2	You can contact us:
+(a)	by post, to the postal address given above;
+(b)	using our website contact form;
+(c)	by telephone, on the contact number published on our website; or
+(d)	by email, using the email address published on our website.
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css"/>
+
+
+    <style>
+        .highlight {
+            background-color: lightyellow;
+        }
+    </style>
+
+
+    <title>Statues</title>
+</head>
+<body>
+<form>
+    {% csrf_token %}
+
+    <div class="container mt-5">
+        <table id="myTable" class="table table-striped" style="width:100%">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Details</th>
+                <th scope="col">Main Image</th>
+                <th scope="col">Skip</th>
+                <th scope="col">Detail URL</th>
+                <th scope="col">Admin</th>
+                <th scope="col">Score Happy</th>
+                <th scope="col">Servant Partner</th>
+            </tr>
+            <tr>
+                <th colspan="4">Highly arched neck, ears back, looking down, fearful, mouth open, focus on rider, tight reins</th>
+                <th></th>
+                <th colspan="4">Looking ahead, ears forward, focus outward, loose reins </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for item in statues %}
+                <tr data-pk="{{ item.pk }}">
+                    <th scope="row">{{ item.name }}</th>
+                    <td>{{ item.scultor }}, {{ item.year }},  {{ item.country }}, {{ item.location }}</td>
+                <td><input type="url" class="form-input main_image" value="{{ item.main_image_url }}"></td>
+                    <td>  <input class="form-check-input skip" type="checkbox" value="{{ item.skip }}" id="skip" ></td>
+                    <td  onclick="$(this).closest('tr').addClass('highlight');window.open('{{ item.details_url }}', '{{ item.name }}', 'width=1500,height=1500'); return false;">Details</td>
+                    <td><a href="/admin/web/statue/{{ item.pk }}" target="_blank">Admin</a>
+                    <td><label for="happy_horse" class="form-label">Unhappy=-1 Happy=1</label>
+                        <input type="range" class="form-range" min="-1" max="1" id="happy_horse" value="{
+                                {{item.happy_horse}}" data-pk="{{ item.pk }}">
+                    </td>
+                    <td><label for="servant-partner" class="form-label">Servant=0 Partner=10</label>
+                        <input type="range" class="form-range" min="0" max="10" id="servant-partner" value="{% if item.servant_partner < 11 %}{{ item.servant_partner }}{% endif %}" data-pk="{{ item.pk }}">
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</form>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script            src="https://code.jquery.com/jquery-3.5.1.min.js"
+                   integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+                   crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.16.6/dist/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" ></script>
+
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+<script>
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $(document).ready(function() {
+        $('#myTable').DataTable();
+    });
+
+    $(document).on("change", ".form-range", function() {
+        var pk = $(this).closest('tr').data("pk");
+        var payload = {'servant_partner': $(this).val()};
+        update_statue(pk, payload);
+
+    });
+
+    $(document).on("change", ".main_image", function() {
+var pk = $(this).closest('tr').data("pk");
+        var payload = {'main_image_url': $(this).val()};
+        update_statue(pk, payload);
+
+    });
+
+
+
+    $(document).on("change", ".skip", function() {
+var pk = $(this).closest('tr').data("pk");
+        var payload = {'skip': this.checked};
+        update_statue(pk, payload);
+    });
+
+    function update_statue(pk, payload) {
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            method: "PATCH",
+            url:  "/api/statues/" + pk +"/",
+            data: payload,
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+        });
+
+    }
+</script>
