@@ -1,0 +1,11 @@
+beautifulsoup4
+psycopg2-binary
+selenium
+Pillow
+djangorestframework
+pandas
+numpy
+django-pandas
+seaborn
+matplotlib
+ipykernel
