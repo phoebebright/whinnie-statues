@@ -3,8 +3,13 @@ Research tool for reviewing equine statues
 
 # Before you start
 - of these 10 statues, which ones do you like most?  No thought!
+- display image for 2/3 seconds then ask Like, Disklike, No Opinion 2/3 seconds to choose.  Done button 
+- Not a horse statue! option to weed out the bots
+- save cooking so we can link - maybe
+
 
 # Login/Register with Keycloak
+- tell us a little aobut yourself: horsey, age 
 
 # Contact us
 
