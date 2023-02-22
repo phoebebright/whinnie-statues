@@ -2,7 +2,11 @@
 # setup following in /etc/ansible/host_vars/localhost
 # this_hostname: "..."
 - hosts: localhost
+  vars:
+    nginx_le_configs_directory: /opt/nginx-letsencrypted/data/configs
   roles:
+    - docker
+    - nginx
     - role: uwsgi_app
       vars:
         #emperor_port: 2023
