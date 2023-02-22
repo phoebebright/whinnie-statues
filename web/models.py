@@ -3,7 +3,7 @@ from urllib.request import urlopen
 from django.db import models
 from django_random_queryset import RandomManager
 from galleryfield.fields import GalleryField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 class WebPage(models.Model):
