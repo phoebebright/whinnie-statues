@@ -7,5 +7,5 @@
     }
   {% endif %}
 
-  reverse_proxy {{ emperor_port }}
+  reverse_proxy :{{ emperor_port }}
 }

@@ -8,7 +8,8 @@
         emperor_port: 2023
         emperor_port_to: /home/django/sockets/equistatue.sock
         web_server: caddy
-        uwsgi_config_template: "{{ playbook_dir }}/templates/Caddyfile"
+        uwsgi_config_template: false
+        project_caddyfile_template: "{{ playbook_dir }}/templates/Caddyfile"
         project:
           name: equistatue
           domain: statues.whinn.ie
