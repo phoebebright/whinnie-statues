@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-VERSION = "1.0.2 Feb 2023"
-API_VER = "102"  # API_VERSION used by allauth
+VERSION = "1.0.3 Feb 2023"
+API_VER = "103"  # API_VERSION used by allauth
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-16k9zm6zvlg1wmkat4dn_n9+=u$47f^elq2+-qt^pevaa#sfu!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['statues.whinn.ie',]
 
 
 # Application definition
