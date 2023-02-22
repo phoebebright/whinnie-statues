@@ -12,3 +12,4 @@ ipykernel
 django-random-queryset
 django-bootstrap-v5
 django-js-error-hook
+git+https://github.com/phoebebright/django-keycloak.git
