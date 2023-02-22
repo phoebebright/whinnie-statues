@@ -6,7 +6,7 @@
   scm: git
 - src: git@gitlab.com:vividlogic/ansible-roles/uwsgi_app.git
   scm: git
-  version: 0.7.13
+  version: 0.7.14
 - src: https://github.com/hleb-rubanau/ansible-role-docker
   name: docker
 - src: https://github.com/hleb-rubanau/ansible-role-nginx-letsencrypted
