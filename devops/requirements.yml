@@ -6,4 +6,4 @@
   scm: git
 - src: git@gitlab.com:vividlogic/ansible-roles/uwsgi_app.git
   scm: git
-  version: 0.7.5
+  version: 0.7.8
