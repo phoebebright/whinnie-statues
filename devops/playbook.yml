@@ -5,16 +5,16 @@
   roles:
     - role: uwsgi_app
       vars:
+        web_server: caddy
+        uwsgi_config_template: false
         project:
           name: equistatue
           domain: statues.whinn.ie
-          web_server: caddy
           touch_logs: 
             - django.log
             - uwsgi.log
           files_to_check_presence: 
             - config/settings_local.py
-          uwsgi_config_template: false
     - role: deploy-via-git-pull
       vars:
         deployment_git_workdir: "{{ playbook_dir }}"
