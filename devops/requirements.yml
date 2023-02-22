@@ -4,3 +4,6 @@
   version: 1.4.0
 - src: git@gitlab.com:vividlogic/ansible-roles/papertrail.git
   scm: git
+- src: git@gitlab.com:vividlogic/ansible-roles/uwsgi_app.git
+  scm: git
+  version: 0.7.0
