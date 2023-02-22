@@ -3,5 +3,22 @@
 # this_hostname: "..."
 - hosts: localhost
   roles:
-    - this_host
-    - caddy
+    - role: uwsgi_app
+      vars:
+        web_server: caddy
+        uwsgi_config_template: false
+        project:
+          name: equistatue
+          domain: statues.whinn.ie
+          touch_logs: 
+            - django.log
+            - uwsgi.log
+          files_to_check_presence: 
+            - config/settings_local.py
+    - role: deploy-via-git-pull
+      vars:
+        deployment_git_workdir: "{{ playbook_dir }}"
+        deployment_skip_checkout_on_existing_dir: yes
+        deployment_command: ./setup.sh
+        deployment_log_prefix: setup
+        deployment_project: statues
