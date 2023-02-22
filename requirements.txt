@@ -14,4 +14,3 @@ django-bootstrap-v5
 django-js-error-hook
 django-galleryfield
 git+https://github.com/phoebebright/django-keycloak.git
-sorl-thumbnail
