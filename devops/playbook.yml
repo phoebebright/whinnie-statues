@@ -3,7 +3,7 @@
 # this_hostname: "..."
 - hosts: localhost
   roles:
-    - role: uwsgi_project
+    - role: uwsgi_app
       vars:
         project:
           name: equistatue
@@ -14,6 +14,7 @@
             - uwsgi.log
           files_to_check_presence: 
             - config/settings_local.py
+          uwsgi_config_template: false
     - role: deploy-via-git-pull
       vars:
         deployment_git_workdir: "{{ playbook_dir }}"
