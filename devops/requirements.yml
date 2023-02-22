@@ -1,0 +1,6 @@
+---
+- src: https://github.com/hleb-rubanau/ansible-role-deploy-via-git-pull
+  name: deploy-via-git-pull
+  version: 1.4.0
+- src: git@gitlab.com:vividlogic/ansible-roles/papertrail.git
+  scm: git

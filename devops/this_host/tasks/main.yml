@@ -1,0 +1,19 @@
+---
+- when: papertrail_destination is defined
+  include_role: 
+    name: papertrail
+  vars:
+    nginx_le_primary_domain: "{{ this_hostname }}"
+    papertrail_rule_name: "95-devops"
+    papertrail_prefixes: 
+      - setup
+      - backup
+- include_role: 
+    name: deploy-via-git-pull
+  vars:
+    deployment_git_workdir: "{{ playbook_dir | dirname }}"
+    deployment_git_subdir: "{{ playbook_dir | basename }}"
+    deployment_skip_checkout_on_existing_dir: yes
+    deployment_command: ./setup.sh
+    deployment_log_prefix: setup
+    deployment_project: statues

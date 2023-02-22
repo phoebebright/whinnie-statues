@@ -1,0 +1,7 @@
+---
+# setup following in /etc/ansible/host_vars/localhost
+# this_hostname: "..."
+- hosts: localhost
+  roles:
+    - this_host
+    - caddy
