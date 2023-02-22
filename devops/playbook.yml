@@ -4,6 +4,8 @@
 - hosts: localhost
   vars:
     nginx_le_configs_directory: /opt/nginx-letsencrypted/data/configs
+    nginx_le_extra_mounts:
+      - "/home/django/sockets:/home/django/sockets"
   roles:
     - docker
     - nginx
