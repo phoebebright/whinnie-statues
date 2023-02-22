@@ -3,5 +3,5 @@
 set -e 
 set -o pipefail
 
-ansible-galaxy install -p roles -r ./requirements.yml
+ansible-galaxy install -p roles --force -r ./requirements.yml
 ansible-playbook ./playbook.yml
