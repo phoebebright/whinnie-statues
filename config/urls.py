@@ -19,17 +19,19 @@ from django.urls import path, include
 from rest_framework import routers
 from django.conf.urls.static import static
 from django.conf import settings
-
+import os
 from web.views import *
 
 router = routers.DefaultRouter()
 router.register(r'statues', StatueViewSet)
 
+challenge_dir = os.path.join(settings.BASE_DIR,".well-known/acme-challenge")
 
 
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('keycloak/', include('django_keycloak.urls')),
     path('get_statues/eqstatuesorg/', get_eqs_website, name='get_eqstatueorg'),
     path('like_dislike/', LikeDislike.as_view(), name='like_dislike'),
     path('stats/', StatueStats.as_view(), name='statue_stats'),
@@ -42,6 +44,12 @@ urlpatterns = [
     path('about/', TemplateView.as_view(template_name='about/help_overview.html'), name="about"),
 
     path('js_error_hook/', include('django_js_error_hook.urls')),
+    path('', LikeDislike.as_view(), name='laning'),
 ]
+urlpatterns += static('.well-known/acme-challenge', document_root=challenge_dir)
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 urlpatterns += [path(r"images-handler/", include("galleryfield.urls"))]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

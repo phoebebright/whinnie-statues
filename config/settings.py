@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-VERSION = "2.50.30 December 2022"
-API_VER = "25030"  # API_VERSION used by allauth
+VERSION = "1.0.2 Feb 2023"
+API_VER = "102"  # API_VERSION used by allauth
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_js_error_hook',
+    'django_keycloak.apps.KeycloakAppConfig',
     'bootstrap5',
     'sorl.thumbnail',
     'galleryfield',
@@ -56,8 +57,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_keycloak.middleware.BaseKeycloakMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    'django_keycloak.auth.backends.KeycloakAuthorizationCodeBackend',
+)
+LOGIN_URL = 'keycloak_login'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+KEYCLOAK_USE_REALM = 'equistatue'
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [

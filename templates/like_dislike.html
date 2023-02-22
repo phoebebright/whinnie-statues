@@ -1,35 +1,26 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
 
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
 
+{% block main %}
 
-
-<style>
-
-</style>
-    <title>Like? Dislike?</title>
-</head>
-<body>
-<form>
     {% csrf_token %}
 
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
 
-        <span class="fs-4">Equestrian Statues - Which ones do you Like?</span>
+        <span class="fs-4">Equestrian Statues - What do you Like?</span>
       </a>
     </header>
 
     <div id="start" class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Thanks for offering to help</h1>
-          <p class="col-md-8 fs-4">I got curious about statues of horses and how the horses are represented, so I've gone geek and am doing some research.  To kick things off I want to get a feel for what people like and dislike.</p>
-                    <p class="col-md-8 fs-4">If you would like to help, please look at the following 10 images and just say if you like or dislike them (or you can say Don't Know).  This is a quick gut feel, you will only get 2 seconds to view the image and 2 seconds to choose your reaction!</p>
+          <p class="col-md-8 fs-4">I got curious about statues of horses and how the horses are represented, so I've gone geek and am doing some research.  To kick things off I want to get a feel for what you like and dislike, just your first reaction.</p>
+                    <p class="col-md-8 fs-4">If you would like to help, please look at the following 10 images and just say if you Like or Dislike them (or you can say Don't Know).  This is a quick gut feel, you will only get 2 seconds to view the image and 2 seconds to choose your reaction!</p>
         <button class="btn btn-primary btn-lg" type="button">Get Started...</button>
       </div>
     </div>
@@ -59,7 +50,9 @@
   </div>
     </form>
 
+{% endblock %}
 
+{% block js %}
 <script>
 
     function getCookie(name) {
@@ -108,3 +101,4 @@
 
     }
 </script>
+{% endblock %}
