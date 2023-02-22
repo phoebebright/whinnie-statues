@@ -17,10 +17,11 @@
         uwsgi_config_template: false
         web_server: nginx
         project_nginx_config_filename: default.conf
+        project_static_url: /shared_static
         project:
           name: equistatue
           domain: statues.whinn.ie
-          static_url: /static
+          #static_url: /static
           touch_logs: 
             - django.log
             - uwsgi.log
