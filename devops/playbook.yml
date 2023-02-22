@@ -7,7 +7,6 @@
       vars:
         web_server: caddy
         uwsgi_config_template: false
-        uwsgi_user: caddy
         project:
           name: equistatue
           domain: statues.whinn.ie
