@@ -2,7 +2,7 @@
 
   {% if project.static_url is defined %} 
     handle_path {{ project.static_url }}/* {
-      root {{ project_shared_static_dir }}
+      root * {{ project_shared_static_dir }}
       fileserver
     }
   {% endif %}
