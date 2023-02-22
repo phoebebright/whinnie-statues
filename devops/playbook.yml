@@ -5,11 +5,12 @@
   roles:
     - role: uwsgi_app
       vars:
-        emperor_port: 2023
-        emperor_port_to: /home/django/sockets/equistatue.sock
-        web_server: caddy
+        #emperor_port: 2023
+        #emperor_port_to: /home/django/sockets/equistatue.sock
+        #project_caddyfile_template: "{{ playbook_dir }}/templates/Caddyfile"
         uwsgi_config_template: false
-        project_caddyfile_template: "{{ playbook_dir }}/templates/Caddyfile"
+        web_server: nginx
+        project_nginx_config_filename: default.conf
         project:
           name: equistatue
           domain: statues.whinn.ie
