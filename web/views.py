@@ -1,13 +1,14 @@
 import logging
 
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
 from django.shortcuts import render
 from bs4 import BeautifulSoup
 from django.views.generic import TemplateView
 from django_pandas.io import read_frame
 from selenium.webdriver.common.by import By
 
-from web.models import WebPage, Statue
+from web.models import WebPage, Statue, Score
 import logging
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -148,3 +149,10 @@ class StatueViewSet(viewsets.ModelViewSet):
     queryset = Statue.objects.all().order_by('name')
     serializer_class = StatueSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+def move_score(request):
+
+    for item in Statue.objects.filter(servant_partner__gt=10, skip=False):
+        Score.objects.create(statue=item, creator=request.user, created=item.updated, score=item.score)
+
+    return HttpResponse("Done")

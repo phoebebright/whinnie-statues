@@ -5,6 +5,7 @@ from django_random_queryset import RandomManager
 from galleryfield.fields import GalleryField
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.conf import settings
 
 class WebPage(models.Model):
     '''Store pages being scraped so only need to get them once'''
@@ -46,8 +47,8 @@ class Statue(models.Model):
     location = models.CharField(max_length=50, blank=True, null=True)
     original = models.CharField(max_length=50, blank=True, null=True)
     skip = models.BooleanField(default=False)
+    missing_image =  models.BooleanField(default=False)
     servant_partner = models.IntegerField(default=99)
-    happy_horse = models.IntegerField(default=0, help_text=_("1 Yes, -1 No, 0 Unscored"))
     gallery = GalleryField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
@@ -59,6 +60,20 @@ class Statue(models.Model):
     def save(self, *args, **kwargs):
 
         self.updated = timezone.now()
+        super().save(*args, **kwargs)
+
+class Score(models.Model):
+    statue = models.ForeignKey(Statue, on_delete=models.CASCADE)
+    score = models.SmallIntegerField(default=0, help_text=_("-1 for dislike, 1 for like, 0 for don't know"))
+    created = models.DateTimeField(auto_created=True)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL,auto_created=True, null=True, on_delete=models.SET_NULL)
+    comments = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.statue} - {self.creator}"
+
+    def save(self, *args, **kwargs):
+
         super().save(*args, **kwargs)
 
 class LikeDislike(models.Model):
