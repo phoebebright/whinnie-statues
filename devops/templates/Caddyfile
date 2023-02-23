@@ -1,0 +1,11 @@
+{{ project.domain }} {
+
+  {% if project.static_url is defined %} 
+    handle_path {{ project.static_url }}/* {
+      root * {{ project_shared_static_dir }}
+      file_server
+    }
+  {% endif %}
+
+  reverse_proxy :{{ emperor_port }}
+}
