@@ -20,10 +20,13 @@ from rest_framework import routers
 from django.conf.urls.static import static
 from django.conf import settings
 import os
+
+from web.api import StatueViewSet, ScoreViewSet
 from web.views import *
 
 router = routers.DefaultRouter()
 router.register(r'statues', StatueViewSet)
+router.register(r'score', ScoreViewSet)
 
 challenge_dir = os.path.join(settings.BASE_DIR,".well-known/acme-challenge")
 
@@ -37,15 +40,17 @@ urlpatterns = [
     path('stats/', StatueStats.as_view(), name='statue_stats'),
     path('score/', login_required()(ScoreStatues.as_view()), name='score_statues'),
     path('statue/', login_required()(ScoreStatue.as_view()), name='score_statue'),
+    path('statue/<int:pk>/', login_required()(ScoreStatue.as_view()), name='score_statue'),
     path('admin/', admin.site.urls),
-    path('move_score/', move_score),
+
 
     path('privacy/', TemplateView.as_view(template_name='privacy_policy.html'), name="privacy"),
     path('cookies/', TemplateView.as_view(template_name='cookies.html'), name="cookies"),
     path('about/', TemplateView.as_view(template_name='about/help_overview.html'), name="about"),
 
     path('js_error_hook/', include('django_js_error_hook.urls')),
-    path('', LikeDislike.as_view(), name='laning'),
+
+    path('', landing, name='landing'),
 ]
 urlpatterns += static('.well-known/acme-challenge', document_root=challenge_dir)
 

@@ -13,6 +13,8 @@
             <span class="fs-4">What about this one?</span>
         </a>
     </header>
+<form>
+    {% csrf_token %}
 
     <input id="pk" type="hidden" value="{{ statue.pk }}">
     <div class="row ">
@@ -30,13 +32,13 @@
                     {% endif %}
                         {% if user.is_staff %}
                         <p>
-                            <a href="{{ statue.details_url }}" class="btn btn-primary"  onclick="$(this).closest('tr').addClass('highlight');window.open('{{ statue.details_url }}', '{{ statue.name }}', 'width=1500,height=1500'); return false;">Show Details...</a></p>
+                            <a href="{{ statue.details_url }}" class="btn btn-primary"  onclick="$(this).closest('tr').addClass('highlight');window.open('{{ statue.details_url }}', '{{ statue.name }}', 'width=1500,height=1500'); return false;">View Statue...</a></p>
                         <div class="mb-3">
                             <label for="main_image" class="form-label">Main Image Address</label>
                             <input id="main_image" type="url" class="form-control main_image" value="{{ statue.main_image_url }}">
                         </div>
                         <div class="mb-3">
-                            <p><a href="/admin/web/statue/{{ statue.pk }}" target="_blank">Admin</a></p>
+                            <p><a href="/admin/web/statue/{{ statue.pk }}" target="_blank">Skip - No image available</a></p>
                         </div>
 
                     {% endif %}
@@ -45,10 +47,6 @@
 
             <div class="col-md-6">
                 <div class="h-100 p-5 bg-light border rounded-3">
-                    <div class="mb-3">
-                        <label for="happy_horse" class="form-label">Unhappy=-1 Happy=1</label>
-                        <input type="range" class="form-range" min="-1" max="1" id="happy_horse" value="{{statue.happy_horse}}">
-                    </div>
                     <div class="mb-3">
                         <label for="servant-partner" class="form-label">Servant=0 Partner=10</label>
                         <input type="range" class="form-range" min="0" max="10" id="servant-partner" value="{% if statue.servant_partner < 11 %}{{ statue.servant_partner }}{% endif %}" >
@@ -97,13 +95,9 @@
         $(document).on("change", "#servant-partner", function() {
             var pk = $("#pk").val();
             var payload = {'servant_partner': $(this).val()};
-            update_statue(pk, payload);
+            add_score(pk, payload);
         });
-        $(document).on("change", "#happy_horse", function() {
-            var pk = $("#pk").val();
-            var payload = {'happy_horse': $(this).val()};
-            update_statue(pk, payload);
-        });
+
         $(document).on("change", ".skip", function() {
             var pk = $("#pk").val();
             var payload = {'skip': this.checked};
@@ -115,6 +109,19 @@
             $.ajax({
                 method: "PATCH",
                 url:  "/api/statues/" + pk +"/",
+                data: payload,
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                },
+            });
+
+        }
+
+        function add_score(pk, payload) {
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                method: "PATCH",
+                url:  "/api/statues/" + pk +"/add_score/",
                 data: payload,
                 beforeSend: function (xhr, settings) {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);

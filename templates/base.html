@@ -197,6 +197,21 @@
 
 <script type="text/javascript">
     window.djangoJSErrorHandlerUrl = "{% url 'js-error-handler' %}"
+   var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken",getCookie('csrftoken'));
+        }
+
+        if (this.url.indexOf("?") >= 0) {
+            this.url = this.url + "&version=" + API_VERSION;
+        } else {
+            this.url = this.url + "?version=" + API_VERSION;
+        }
+    }
+});
+
 </script>
 <script type="text/javascript" src="{% static 'js/django_js_error_hook.js' %}"></script>
 

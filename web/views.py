@@ -1,17 +1,18 @@
 import logging
 
 from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from bs4 import BeautifulSoup
 from django.views.generic import TemplateView
 from django_pandas.io import read_frame
-from selenium.webdriver.common.by import By
+
+from django.urls import reverse_lazy
 
 from web.models import WebPage, Statue, Score
 import logging
-from rest_framework import viewsets
-from rest_framework import permissions
+
+
 
 from selenium import webdriver
 #from PIL import Image
@@ -22,6 +23,11 @@ logger = logging.getLogger('django')
 def is_superuser(user):
     return user.is_superuser
 
+def landing(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse_lazy("score_statue"))
+    else:
+        return HttpResponseRedirect(reverse_lazy("like_dislike"))
 
 @user_passes_test(is_superuser)
 def get_eqs_website(request):
@@ -93,7 +99,7 @@ class LikeDislike(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        queryset = Statue.objects.filter(skip=False)
+        queryset = Statue.objects.filter(skip=False, main_image_url__isnull=False)
         context['statues'] = queryset.random(10)
         context['session_id'] = self.request.session._get_or_create_session_key()
         return context
@@ -108,7 +114,7 @@ class ScoreStatues(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['statues'] = Statue.objects.filter(servant_partner__gt=10, skip=False).order_by('-servant_partner')
+        context['statues'] = Statue.objects.filter(scored_count=0, skip=False).order_by('-servant_partner')
         return context
 
 
@@ -120,8 +126,11 @@ class ScoreStatue(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        queryset = Statue.objects.filter(servant_partner__gt=10, skip=False)
-        context['statue'] = queryset.random().first()
+        if 'pk' in kwargs:
+            context['statue'] = Statue.objects.get(pk=kwargs['pk'])
+        else:
+            queryset = Statue.objects.filter(scored_count=0, skip=False)
+            context['statue'] = queryset.random().first()
         return context
 
 
@@ -132,7 +141,7 @@ class StatueStats(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        qs = Statue.objects.filter(servant_partner__lte=10, skip=False).order_by('-servant_partner')
+        qs = Statue.objects.filter(scored_count__gt=0, skip=False).order_by('-servant_partner')
         df = read_frame(qs)
         df.to_csv('statue.csv', index=False)
         return context
@@ -141,18 +150,11 @@ class StatueStats(TemplateView):
 
 
 
-
-class StatueViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Statue.objects.all().order_by('name')
-    serializer_class = StatueSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-def move_score(request):
-
-    for item in Statue.objects.filter(servant_partner__gt=10, skip=False):
-        Score.objects.create(statue=item, creator=request.user, created=item.updated, score=item.score)
-
-    return HttpResponse("Done")
+#
+# def move_score(request):
+#
+#     for item in Statue.objects.filter(servant_partner__lte=10, skip=False):
+#         Score.objects.create(statue=item, creator=request.user, servant_partner=item.servant_partner)
+#         item.scored_count = 1
+#         item.save()
+#     return HttpResponse("Done")
