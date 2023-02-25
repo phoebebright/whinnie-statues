@@ -26,11 +26,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% endblock %}
 
-    {% if DC_MODE %}
-        <meta name="description" content="DressageCalculator.com makes it quick, easy and accurate to calculate the score for a dressage test sheet. The calculator knows which scores should be doubled, which ones form part of the collective mark, can show a percentage or event type total and calculates to 2 or 3 decimal places.">
-    {% else %}
-        <meta name="description" content="Skor.ie - Score, Store and Analyse your Dressage Test Results ">
-    {% endif %}
+
+    <meta name="description" content="How are horses depicted in equestrian statues?  Are the the servant or the partner of the rider?  We are surveying all 1200 statues in the world.  Can you help?">
+
     <meta name="author" content="Phoebe Bright, HorseTech.ie">
 
     <!-- Hide the browser UI -->
@@ -134,7 +132,13 @@
             </a>
 
             <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                <a class="py-2 text-dark text-decoration-none" href="#">{% if user.is_authenticated %}{{ user.email }}{% endif %}</a>
+                {% if user.is_authenticated %}
+                    <a class="py-2 text-dark text-decoration-none" href="#">{{ user.email }}</a>
+                    <a class="nav-link" href="{% url "keycloak_logout" %}" >{% trans "Signout" %}</a>
+                {% else %}
+                    <a class="nav-link" href="{% url "keycloak_register" %}" >{% trans "Signup" %}</a>
+                    <a class="nav-link" href="{% url "keycloak_login" %}" >{% trans "Signin" %}</a>
+                {% endif %}
             </nav>
         </div>
 
@@ -195,26 +199,45 @@
 </div>
 
 
-<script type="text/javascript">
-    window.djangoJSErrorHandlerUrl = "{% url 'js-error-handler' %}"
-   var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken",getCookie('csrftoken'));
-        }
-
-        if (this.url.indexOf("?") >= 0) {
-            this.url = this.url + "&version=" + API_VERSION;
-        } else {
-            this.url = this.url + "?version=" + API_VERSION;
-        }
-    }
-});
-
-</script>
 <script type="text/javascript" src="{% static 'js/django_js_error_hook.js' %}"></script>
 
+<script>
+           API_VERSION="{{ API_VERSION }}";
+
+    function csrfSafeMethod(method) {
+// these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken",getCookie('csrftoken'));
+            }
+
+            if (this.url.indexOf("?") >= 0) {
+                this.url = this.url + "&version=" + API_VERSION;
+            } else {
+                this.url = this.url + "?version=" + API_VERSION;
+            }
+        }
+    });
+</script>
 {% block js %}
 
 {% endblock js %}

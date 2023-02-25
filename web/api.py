@@ -11,9 +11,9 @@ class StatueViewSet(viewsets.ModelViewSet):
     """
     queryset = Statue.objects.all().order_by('name')
     serializer_class = StatueSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = []
+    permission_classes = []
     http_method_names = ['post', 'patch','get']
+
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
@@ -24,6 +24,11 @@ class StatueViewSet(viewsets.ModelViewSet):
         obj.add_score(request.data, request.user)
         return Response("OK")
 
+    @action(detail=True, methods=['patch'])
+    def skip(self, request, pk=None):
+        obj = self.get_object()
+        obj.skip = True
+        return Response("OK")
 
 class ScoreViewSet(viewsets.ModelViewSet):
     """

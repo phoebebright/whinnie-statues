@@ -26,10 +26,13 @@ API_VER = "103"  # API_VERSION used by allauth
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-16k9zm6zvlg1wmkat4dn_n9+=u$47f^elq2+-qt^pevaa#sfu!'
 
+USE_ASSETS = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['statues.whinn.ie',]
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 # Application definition
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_js_error_hook',
     'django_keycloak.apps.KeycloakAppConfig',
+    'rest_framework',
     'bootstrap5',
     'sorl.thumbnail',
     'galleryfield',
@@ -51,8 +55,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -83,6 +89,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'web.context_processors.include_settings',
             ],
         },
     },
@@ -151,6 +158,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'django_keycloak.auth.backends.KeycloakDRFAuthorizationBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_THROTTLE_CLASSES': (

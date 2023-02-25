@@ -21,6 +21,7 @@
         <div class="col">
             <h3>{{ statue.name }}</h3>
             <p>{{ statue.scultor }}, {{ statue.year }},  {{ statue.country }}, {{ statue.location }}</p>
+            <p>ID: {{ statue.pk }}</p>
         </div>
 
         <div class="row align-items-md-stretch">
@@ -28,7 +29,7 @@
             <div class="col-md-6">
                 <div class="h-100 p-5 text-white rounded-3">
                     {% if statue.main_image_url %}
-                        <img src="{{ statue.main_image_url }}">
+                        <img src="{{ statue.main_image_url }}" width="100%">
                     {% endif %}
                         {% if user.is_staff %}
                         <p>
@@ -38,7 +39,7 @@
                             <input id="main_image" type="url" class="form-control main_image" value="{{ statue.main_image_url }}">
                         </div>
                         <div class="mb-3">
-                            <p><a href="/admin/web/statue/{{ statue.pk }}" target="_blank">Skip - No image available</a></p>
+                            <p><a href="#" target="_blank">Skip - No image available</a></p>
                         </div>
 
                     {% endif %}
@@ -69,21 +70,7 @@
 {% block js %}
     <script>
 
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
+
 
         $(document).on("change", ".main_image", function() {
             var pk = $("#pk").val();
@@ -105,27 +92,22 @@
         });
 
         function update_statue(pk, payload) {
-            var csrftoken = getCookie('csrftoken');
+
             $.ajax({
                 method: "PATCH",
                 url:  "/api/statues/" + pk +"/",
                 data: payload,
-                beforeSend: function (xhr, settings) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                },
+
             });
 
         }
 
         function add_score(pk, payload) {
-            var csrftoken = getCookie('csrftoken');
             $.ajax({
-                method: "PATCH",
+                method: "POST",
                 url:  "/api/statues/" + pk +"/add_score/",
-                data: payload,
-                beforeSend: function (xhr, settings) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                },
+                data: payload
+
             });
 
         }
