@@ -9,7 +9,7 @@ from django_pandas.io import read_frame
 
 from django.urls import reverse_lazy
 
-from web.models import WebPage, Statue, Score
+from web.models import WebPage, Statue, Score, Subscribe
 import logging
 
 
@@ -90,6 +90,14 @@ def get_eqs_website(request):
         print(obj)
 
 
+class LikeDislikeLanding(TemplateView):
+
+    '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
+
+    template_name = "like_dislike_landing.html"
+
+
+
 class LikeDislike(TemplateView):
 
     '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
@@ -105,6 +113,16 @@ class LikeDislike(TemplateView):
         return context
 
 
+class LikeDislikeDone(TemplateView):
+
+    '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
+
+    template_name = "like_dislike_done.html"
+
+    def post(self, request, *args, **kwargs):
+        if 'email' in request.POST:
+            Subscribe.objects.get_or_create(email=request.POST['email'])
+        return HttpResponseRedirect("/")
 
 class ScoreStatues(TemplateView):
 

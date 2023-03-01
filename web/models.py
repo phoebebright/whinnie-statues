@@ -50,6 +50,9 @@ class Statue(models.Model):
     missing_image =  models.BooleanField(default=False)
     servant_partner = models.IntegerField(default=99)
     scored_count = models.PositiveSmallIntegerField(default=0)
+    like_yes = models.PositiveSmallIntegerField(default=0)
+    like_no = models.PositiveSmallIntegerField(default=0)
+    like_dontknow = models.PositiveSmallIntegerField(default=0)
     gallery = GalleryField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
@@ -66,6 +69,16 @@ class Statue(models.Model):
     def add_score(self, data, user):
 
         Score.objects.create(statue=self, servant_partner=data['servant_partner'], creator=user)
+
+    def update_likes(self, value):
+
+        if value == 0:
+            self.like_dontknow += 1
+        elif value < 0:
+            self.like_no += 1
+        else:
+            self.like_yes += 1
+        self.save()
 
 class Score(models.Model):
     statue = models.ForeignKey(Statue, on_delete=models.CASCADE)
@@ -94,3 +107,9 @@ class Subscribe(models.Model):
     created = models.DateTimeField(auto_created=True)
 
 
+    def __str__(self):
+        return self.email
+
+    def save(self, *args, **kwargs):
+        self.created = timezone.now()
+        super().save(*args, **kwargs)

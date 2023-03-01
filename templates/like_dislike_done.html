@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
+
+{% block main %}
+
+    {% csrf_token %}
+
+    <div class="container py-4">
+        <header class="pb-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+
+                <span class="fs-4">Equestrian Statues - What do you Like?</span>
+            </a>
+        </header>
+
+        <div id="start" class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Thanks for helping</h1>
+                <p class="col-md-8 fs-4">Once there have enough "gut feel" scores, I will start sharing the most liked and disliked and then I will be asking more detailed questions about statues.</p>
+                <p class="col-md-8 fs-4">If you would like to be updated and maybe help with the next phase, please leave your email below.  It won't be shared with anyone and will be deleted at the end of the project, or if you ask me to - my email is phoebe@horsetech.ie.  Thanks you, Phoebe Bright.</p>
+
+
+                <div class="mx-5">
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3 mt-4">
+                            <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+                            <button class="btn btn-success border-rad" type="submit" >Subscribe</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+{% endblock js %}
