@@ -1,3 +1,4 @@
+django
 beautifulsoup4
 psycopg2-binary
 selenium

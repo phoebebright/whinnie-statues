@@ -1,7 +1,9 @@
 Adding new Client to Skorie Realm
 =============
 
-INSTALL CUSTOM VERSION - git+https://github.com/phoebebright/django-keycloak.git
+INSTALL CUSTOM VERSION - git+https://github.com/phoebebright/django-keycloak.git or for django 4: 
+git+https://github.com/phoebebright/django-keycloak.git@django4
+
 that allows multiple clients: one for local dev and one for production
 
 https://django-keycloak.readthedocs.io/en/latest/
