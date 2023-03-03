@@ -67,7 +67,6 @@ class Statue(models.Model):
         super().save(*args, **kwargs)
 
     def add_score(self, data, user):
-
         Score.objects.create(statue=self, servant_partner=data['servant_partner'], creator=user)
 
     def update_likes(self, value):

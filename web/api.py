@@ -35,6 +35,7 @@ class StatueViewSet(viewsets.ModelViewSet):
     def skip(self, request, pk=None):
         obj = self.get_object()
         obj.skip = True
+        obj.save()
         return Response("OK")
 
 class ScoreViewSet(viewsets.ModelViewSet):
