@@ -135,16 +135,7 @@ class About(TemplateView):
             Subscribe.objects.get_or_create(email=request.POST['email'])
         return HttpResponseRedirect("/")
 
-class ScoreStatues(TemplateView):
 
-    '''competition dashboard'''
-
-    template_name = "statues.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['statues'] = Statue.objects.filter(scored_count=0, skip=False).order_by('-servant_partner')
-        return context
 
 
 class ScoreStatue(TemplateView):

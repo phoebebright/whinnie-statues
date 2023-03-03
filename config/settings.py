@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-VERSION = "1.0.4 Mar 2023"
-API_VER = "104"  # API_VERSION used by allauth
+VERSION = "1.0.5 Mar 2023"
+API_VER = "105"  # API_VERSION used by allauth
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

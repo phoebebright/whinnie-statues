@@ -47,9 +47,16 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="h-100 p-5 bg-light border rounded-3">
-                            <div class="mb-3">
-                                <label for="servant-partner" class="form-label">Servant=0 Partner=10</label>
+                    <p>Do you think the horse is more a servant or a partner? Move the slider to where you think it should be.</p>
+                        <div class="p-4 bg-light border rounded-3 row">
+                            <div class="col-6">
+                                Servant
+                            </div>
+                            <div class="col-6" style="text-align: right;">
+                                Partner
+                            </div>
+
+                            <div class="col-12">
                                 <input type="range" class="form-range" min="0" max="10" id="servant-partner" value="{% if statue.servant_partner < 11 %}{{ statue.servant_partner }}{% endif %}" >
                             </div>
                         </div>
@@ -70,7 +77,9 @@
 {% block js %}
     <script>
 
-
+        {% if not statue.main_image_url %}
+            window.open("{{ statue.details_url }}", '{{ statue.name }}', 'width=1500,height=1500');
+        {% endif %}
 
         $(document).on("change", ".main_image", function() {
             var pk = $("#pk").val();
@@ -81,8 +90,14 @@
 
         $(document).on("click", ".next", function() {
             var pk = $("#pk").val();
-            var payload = {'servant_partner': $("#servant-partner").val()};
-            add_score(pk, payload);
+            if (parseInt($("#servant-partner").val()) != 5 ) {
+                var payload = {'servant_partner': parseInt($("#servant-partner").val())};
+                add_score(pk, payload);
+                console.log("Adding Score");
+            } else {
+                //TODO: this currently ignores scores of 5 (don't know)
+                next();
+            }
         });
 
         $(document).on("click", ".skip", function() {

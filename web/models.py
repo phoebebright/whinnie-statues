@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 
 from django.db import models
+from django.db.models import Avg
 from django_random_queryset import RandomManager
 from galleryfield.fields import GalleryField
 from django.utils.translation import gettext_lazy as _
@@ -48,7 +49,7 @@ class Statue(models.Model):
     original = models.CharField(max_length=50, blank=True, null=True)
     skip = models.BooleanField(default=False)
     missing_image =  models.BooleanField(default=False)
-    servant_partner = models.IntegerField(default=99)
+    servant_partner_avg = models.FloatField(default=0)
     scored_count = models.PositiveSmallIntegerField(default=0)
     like_yes = models.PositiveSmallIntegerField(default=0)
     like_no = models.PositiveSmallIntegerField(default=0)
@@ -67,7 +68,14 @@ class Statue(models.Model):
         super().save(*args, **kwargs)
 
     def add_score(self, data, user):
-        Score.objects.create(statue=self, servant_partner=data['servant_partner'], creator=user)
+        Score.objects.update_or_create(statue=self, creator=user, defaults={'servant_partner':data['servant_partner']} )
+
+        # recalc avg and count
+
+        self.scored_count = Score.objects.filter(statue=self).count()
+        result = Score.objects.filter(statue=self).aggregate(Avg('servant_partner'))
+        self.servant_partner_avg = result['servant_partner__avg']
+        self.save()
 
     def update_likes(self, value):
 
