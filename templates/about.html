@@ -5,6 +5,9 @@
 {% block title %}{% trans "About" %}{% endblock %}
 
 {% block main %}
+    <div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0&appId=997102350626725&autoLogAppEvents=1" nonce="rAVFBHz2"></script>
+
 <main>
   <h1 class="visually-hidden">Why?</h1>
 
@@ -64,8 +67,12 @@
             <input type="email" class="form-control" id="floatingInput" placeholder="email">
             <label for="floatingInput">Email address</label>
           </div>
-
+<p>
            <button class="btn btn-success border-rad" type="submit" >Subscribe</button>
+</p>
+
+<div class="fb-share-button" data-href="https://statues.whinn.ie" data-layout="" data-size=""><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fstatues.whinn.ie%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share on Facebook</a></div>
+
 
         </form>
       </div>
@@ -76,6 +83,8 @@
 
 
   <div class="b-example-divider mb-0"></div>
+
+
 </main>
 
 {% endblock %}
