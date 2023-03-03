@@ -48,7 +48,7 @@ urlpatterns = [
 
     path('privacy/', TemplateView.as_view(template_name='privacy_policy.html'), name="privacy"),
     path('cookies/', TemplateView.as_view(template_name='cookies.html'), name="cookies"),
-    path('about/', TemplateView.as_view(template_name='about/help_overview.html'), name="about"),
+    path('about/', About.as_view(), name="about"),
 
     path('js_error_hook/', include('django_js_error_hook.urls')),
 

@@ -8,33 +8,25 @@
 
     {% csrf_token %}
 
-    <div class="container py-4">
-    <header class="pb-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
 
-            <span class="fs-4">Equestrian Statues - What do you Like?</span>
-        </a>
-    </header>
 
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card">
-                    <img class="card-img-top" src="" alt="Card image cap" id="image">
-                    <div class="card-body">
-                        <h5 class="card-title">Do you like the horse in this statue?</h5>
-                        <p class="card-text">
-                    <button type="button" class="btn btn-success like_dislike " data-like="1" style="width:30%;">Yes</button>
-                    <button type="button" class="btn btn-info like_dislike" data-like="0" style="width:30%;">Don't Know</button>
-<button type="button" class="btn btn-danger like_dislike" data-like="-1" style="width:30%;">No</button>
-                        </p>
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <img class="card-img-top" src="" alt="Card image cap" id="image">
+                        <div class="card-body">
+                            <h5 class="card-title">Do you like the the way the horse is represented in this statue?</h5>
+                            <p class="card-text">
+                                <button type="button" class="btn btn-success like_dislike " data-like="1" style="width:30%;">Yes</button>
+                                <button type="button" class="btn btn-info like_dislike" data-like="0" style="width:30%;">Don't Know</button>
+                                <button type="button" class="btn btn-danger like_dislike" data-like="-1" style="width:30%;">No</button>
+                            </p>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    </div>
+
 
 
 {% endblock %}
@@ -52,24 +44,20 @@
             // Define variables for the images and ratings
 
 
-            // Get references to the HTML elements
-            $("#image").attr('src', images[0]);
-            current_pk = images_pk[0];
+            increment_image();
 
 
             // Set up event listener for the Next Image button
             $(".like_dislike").click(function() {
 
-                 $("#image").fadeOut();
+
 
                 update_statue(current_pk, {like: $(this).data('like')});
 
                 // Show the next image or finish rating
                 if (images.length > 0) {
 
-                    $("#image").attr("src", images.shift());
-                     $("#image").fadeIn();
-                    current_pk = images_pk.shift();
+                    increment_image();
 
                 } else {
                     document.location.href = "/like_dislike/done/";
@@ -78,11 +66,18 @@
         });
 
 
+        function increment_image() {
 
+            $("#image").attr("src", images.shift());
+            $("#image").fadeIn();
+            current_pk = images_pk.shift();
+
+        }
 
 
         function update_statue(pk, payload) {
             var csrftoken = getCookie('csrftoken');
+            console.log('a');
             $.ajax({
                 method: "PATCH",
                 url:  "/api/statues/" + pk +"/like_dislike/",

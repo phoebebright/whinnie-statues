@@ -136,8 +136,8 @@
                     <a class="py-2 text-dark text-decoration-none" href="#">{{ user.email }}</a>
                     <a class="nav-link" href="{% url "keycloak_logout" %}" >{% trans "Signout" %}</a>
                 {% else %}
-                    <a class="nav-link" href="{% url "keycloak_register" %}" >{% trans "Signup" %}</a>
-                    <a class="nav-link" href="{% url "keycloak_login" %}" >{% trans "Signin" %}</a>
+{#                    <a class="nav-link" href="{% url "keycloak_register" %}" >{% trans "Signup" %}</a>#}
+{#                    <a class="nav-link" href="{% url "keycloak_login" %}" >{% trans "Signin" %}</a>#}
                 {% endif %}
             </nav>
         </div>

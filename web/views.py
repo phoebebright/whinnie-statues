@@ -27,7 +27,7 @@ def landing(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse_lazy("score_statue"))
     else:
-        return HttpResponseRedirect(reverse_lazy("like_dislike"))
+        return HttpResponseRedirect(reverse_lazy("about"))
 
 @user_passes_test(is_superuser)
 def get_eqs_website(request):
@@ -118,6 +118,17 @@ class LikeDislikeDone(TemplateView):
     '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
 
     template_name = "like_dislike_done.html"
+
+    def post(self, request, *args, **kwargs):
+        if 'email' in request.POST:
+            Subscribe.objects.get_or_create(email=request.POST['email'])
+        return HttpResponseRedirect("/")
+
+class About(TemplateView):
+
+    '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
+
+    template_name='about.html'
 
     def post(self, request, *args, **kwargs):
         if 'email' in request.POST:

@@ -4,238 +4,78 @@
 
 {% block title %}{% trans "About" %}{% endblock %}
 
+{% block main %}
+<main>
+  <h1 class="visually-hidden">Why?</h1>
 
-
-{% block extra_head %}
-    <style>
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        h5 {
-            margin-top: 0px;
-            font-size: 1.4rem;
-        }
-        .subscribe {
-            font-size: 0.9rem;
-        }
-
-#strapline {
-    margin-left: 20px;
-
-}
-        .goto_score {
-            cursor: pointer;
-        }
-
-        .version {
-            font-weight: 600;
-            vertical-align: top;
-        }
-
-        .news {
-            font-size: 1.4rem;
-            text-align: center;
-            font-weight: 300;
-
-            text-align: center;
-            font-family: 'Roboto Condensed', sans-serif;
-        }
-
-        .signinup {
-            background-color: #def4ea;
-        }
-        .signinup input {
-            background-color: white !important;
-            margin-top: 8px !important;
-        }
-        .signinup .btn {
-            margin-top: 12px;
-        }
-
-        .emphasise {
-            font-weight: 400;
-            text-decoration: underline;
-        }
-
-        @media screen and (max-width: 600px) {
-            .two_button_block_left {
-                padding-bottom:10px !important;
-            }
-
-        }
-
-        @media screen and (min-width: 601px) {
-            .one_button_block {
-                padding-left: 0px !important;
-                padding-right: 0px !important;
-            }
-            .two_button_block_left {
-                padding-left:0px !important;
-
-            }
-            .two_button_block_right {
-                padding-right:0px !important;
-            }
-        }
-
-        .text-link {
-            color:#48c596;
-            font-weight: 800;
-        }
-
-
-        #choices.row {
-            display: flex;
-            flex-wrap: wrap;
-            row-gap: 24px;
-        }
-
-        #choices .col {
-            row-gap: 0px;
-            column-gap: 0px;
-        }
-
-        #choices .card {
-            height: 100%;
-            padding: 15px;
-
-        }
-
-
-    </style>
-{% endblock %}
-
-{% block content %}
-    <div class="plaintext">
-        <h1>About Skor.ie</h1>
-
-        <h3>There must be an easier way...</h3>
-
-        <p>The first version was called DressageCalculator and was created in 2012 after Phoebe Bright, a developer and horse rider, was helping out at a dressage show doing the scoring of testsheets with a old fashioned calculator.  After the fourth attempt at calculating the total of a sheet and getting a different answer, she vowed to create an app to take the pain out of calculating dressage scores!</p>
-
-        <p>Seven years later, DressageCalculator has grown into Skor.ie and has evolved into both a way of riders keeping a record of their scores and analysing their results and an event management application for dressage shows.  The latest developments can be found at <a href="https://skor.ie">https://skor.ie</a> while <a href="https://dressagecalculator.com ">https://dressagecalculator.com</a> remains the simple scoring webapp that does just what it says on the tin.</p>
+  <div class="px-4 py-2 my-2 text-center">
+    <img class="d-block mx-auto mb-4" src="{% static "images/statue1.jpg" %}" alt="" width="300" >
+    <h1 class="display-5 fw-bold">What's it all about?</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead mb-4">I got curious about statues of horses when looking at stereotypes of dressage horses using DALE-2 and StableDiffusion (another story!).  We seem to like horses with highly arched necks and I wondered if this was a recent preference or historical?  Then I found Kees Van Tilburg's website with photographs and descriptions of most of the known equestrian statues of the world and so I've gone geek and am doing some research.  Can you help?</p>
+        <p class="lead mb-4">I want to first see if people have a gut preference for the different ways horses are represented in statues. If you can spare a minute, click the Survey 1 button below and you will be shown 10 images of statues with a question about whether you like this respresentation of the horse or not. </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a href="/like_dislike/" class="btn btn-primary btn-lg px-4 gap-3">Survey 1</a>
+      </div>
     </div>
-    <div id="index" class="row" >
-         <h5>Skor.ie Modules:</h5>
-            <div class="accordion" id="SkorieModules">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <h5><i class="bi bi-calculator"></i> &nbsp; Scoring </h5></a>
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#SkorieModules">
-                        <div class="accordion-body">
-                            <h5>Dressage Scoring</h5>
-                            <p>Smart calculator that knows each test with many features to make scoring tests quicker, easier and more accurate. <b>Now on mobile!</b></p>
+  </div>
 
-                            <p> <a href="https://dressagecalculator.com" class="text-link" target=_blank><img src="{% static "images/dressagecalculator_logo.png" %}" width="200px" /></a>
-                                <a href="https://dressagecalculator.com" class="text-link" target=_blank>&nbsp;&nbsp;Try it...</a></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            <h5><i class="bi bi-clock"></i> &nbsp;Scheduling</h5>
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#SkorieModules">
-                        <div class="accordion-body">
-                            <h5>Schedule Entries</h5>
-                            <p>Automatically assigning times, identify all conflicts and fix easily with drag and drop interface, add breaks, multiple arenas, multiple judges etc.</p>
-                            <p><a href="https://www.youtube.com/watch?v=NJcqy0fjHAk" class="text-link" target="_blank">Watch the video...</a></p>
-                            <p>
-                                <a href="{%  url "contact" %}" class="subscribe text-link">Contact us to get started...</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            <h5><i class="bi bi-trophy"></i> &nbsp;Organising and Running Events</h5>
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#SkorieModules">
-                        <div class="accordion-body">
-                            <h5>Paperless Dressage Shows (nearly!)</h5>
-                            <p>Manage your show online.  Reduce the running around and support need to run a dressage show.  Electronic scoring, real time results, stewards always up to date. </p>
-                            <p>
-                                <a href="{%  url "contact" %}" class="subscribe text-link">Contact us to get started...</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#OnlineShows" aria-expanded="false" aria-controls="OnlineShows">
-                            <h5><i class="bi bi-laptop"></i> &nbsp;Running Online Shows</h5>
-                        </button>
-                    </h2>
-                    <div id="OnlineShows" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#SkorieModules">
-                        <div class="accordion-body">
-                            <h5>Online Dressage Shows</h5>
-                            <p>Everything online including automatic compression of competitors videos, a custom screen for the judge and printed final scoresheets.</p>
-                            <p><a href="https://www.youtube.com/watch?v=0rNnlr5CiAk" class="text-link" target="_blank">Watch the video...</a></p>
-                            <p>
-                                <a href="{%  url "contact" %}" class="subscribe text-link">Contact us to get started...</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#JudgesTraining" aria-expanded="false" aria-controls="JudgesTraining">
-                            <h5><i class="bi bi-mortarboard"></i> &nbsp;Judges Training</h5>
-                        </button>
-                    </h2>
-                    <div id="JudgesTraining" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#SkorieModules">
-                        <div class="accordion-body">
+  <div class="b-example-divider"></div>
 
-                            <h5>Judges Training</h5>
-                            <p>Practise judging with our online Judging module.  Review judges performance with data visualisations.</p>
-                            <p>
-                                <a href="{%  url "contact" %}" class="subscribe text-link">Contact us to get started...</a>
-                            </p>
+  <div class="px-4 pt-5 my-5 text-center border-bottom">
+    <h1 class="display-4 fw-bold">Checkout Kees Van Tilburg's Equestrian Statues Webite</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead mb-4">An amazing archive of 1257 equestrian statues with photos and descriptions of each of the statues. </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+        <button a href="equestrianstatue.org"  class="btn btn-primary btn-lg px-4 me-sm-3">EquestrianStatue.org</button>
 
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingSix">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#More" aria-expanded="false" aria-controls="More">
-                            <h5>More...</h5>
-                        </button>
-                    </h2>
-                    <div id="More" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#SkorieModules">
-                        <div class="accordion-body">
-                            <h5>More...</h5>
-                            <p>We are working on moving into Eventing, TREC and other show formats and opening up our Testsheet management so issuers can manage their tests electronically...</p>
-                            <p>
-                                <a href="{%  url "contact" %}" class="subscribe text-link">Contact us to discuss your requirements...</a>
-                            </p>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+      </div>
     </div>
 
-        <p>DressageCalculator and Skor.ie have been developed largely for the UK and Ireland but are available for world wide use with the option to add translations.  If you would like your testsheets added, do contact us at info@skor.ie.</p>
+  </div>
 
+  <div class="b-example-divider"></div>
 
-        <button  class="btn "
-                 onCLick="history.back()">Back...</button>
+  <div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold lh-1 mb-3">Do you have any ideas for questions to add to the survey?</h1>
+
+      </div>
+              <div class="col-lg-6">
+ <p>I've put my email at the end of Survey 1 to try and avoid being spammed, so take the survey and then let me know your thoughts.</p>
+              </div>
     </div>
+  </div>
 
+  <div class="b-example-divider"></div>
+
+  <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+    <div class="row align-items-center g-lg-5 py-5">
+      <div class="col-lg-7 text-center text-lg-start">
+        <h1 class="display-4 fw-bold lh-1 mb-3">Subscribe to get news</h1>
+        <p class="col-lg-10 fs-4">If you would like the results of this survey or an invitation to participate in round 2, just leave your email.  I won't share it with anyone and emails will be deleted at the end of this project.</p>
+      </div>
+      <div class="col-md-10 mx-auto col-lg-5">
+        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" >
+            {% csrf_token %}
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="email">
+            <label for="floatingInput">Email address</label>
+          </div>
+
+           <button class="btn btn-success border-rad" type="submit" >Subscribe</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="b-example-divider mb-0"></div>
+</main>
 
 {% endblock %}
-
-{% block js %}
-
-
-
-{% endblock js %}
