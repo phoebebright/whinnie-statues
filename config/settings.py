@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-VERSION = "1.0.5 Mar 2023"
-API_VER = "105"  # API_VERSION used by allauth
+VERSION = "1.0.6 Mar 2023"
+API_VER = "106"  # API_VERSION used by allauth
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -30,11 +30,11 @@ USE_ASSETS = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# idiomatic approach would be to not hardcode domain at all, 
-# and rely solely on env -- but it may break dev environment, as the change is unsolicited :)
-site_domain = os.getenv("SITE_DOMAIN",'statues.whinn.ie')
-ALLOWED_HOSTS = [site_domain,]
-SITE_URL = ("https://%s" % site_domain) # needs to be specified early
+
+SITE_ID = 1
+SITE_URL = "https://statues.whinn.ie"
+SITE_NAME = "Statues"
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
