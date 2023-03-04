@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-16k9zm6zvlg1wmkat4dn_n9+=u$47f^elq2+-qt^pevaa#sfu!
 
 USE_ASSETS = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 SITE_ID = 1
