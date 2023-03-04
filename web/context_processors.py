@@ -22,8 +22,8 @@ def include_settings(request=None):
                'LANGUAGE_CODE': settings.LANGUAGE_CODE,
                'VERSION' : settings.VERSION,
                'API_VERSION' : settings.API_VER,
-               # 'SITE_URL' : settings.SITE_URL,
-               # 'SITE_NAME' : settings.SITE_NAME,
+               'SITE_URL' : settings.SITE_URL,
+               'SITE_NAME' : settings.SITE_NAME,
                'LOGIN_URL' : settings.LOGIN_URL,
 
                'cookielaw_accepted': request.COOKIES.get('cookielaw_accepted', False),
