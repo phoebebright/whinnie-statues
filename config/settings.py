@@ -102,7 +102,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'shared_static')
-STATIC_URL = '/shared_static/'
+STATIC_URL = '/static/'
 
 DJANGO_GALLERY_FIELD_CONFIG = {
     "bootstrap_version": 5,
