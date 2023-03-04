@@ -109,7 +109,7 @@ class LikeDislike(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        queryset = Statue.objects.filter(skip=False, main_image_url__isnull=False)
+        queryset = Statue.objects.live()
         context['statues'] = queryset.random(10)
         context['session_id'] = self.request.session._get_or_create_session_key()
         return context
@@ -166,6 +166,27 @@ class StatueStats(TemplateView):
         qs = Statue.objects.filter(scored_count__gt=0, skip=False).order_by('-servant_partner')
         df = read_frame(qs)
         df.to_csv('statue.csv', index=False)
+        return context
+
+
+
+class Show4Score(TemplateView):
+
+    template_name = "show_statues.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'like' in kwargs:
+            if kwargs['like'] == 'like':
+                context['selection'] = f"Statues where people liked the representation of the horse"
+                context['objects'] = Statue.objects.filter(like_yes__gt=1).order_by('-servant_partner_avg')
+            else:
+                context['selection'] = f"Statues where people did NOT like the representation of the horse"
+                context['objects'] = Statue.objects.filter(like_no__gt=1).order_by('-servant_partner_avg')
+        else:
+            score = int(kwargs['score'])
+            context['selection'] = f"Scores for Servant/Partner between {score-0.5} and {score+0.5}"
+            context['objects'] = Statue.objects.filter(servant_partner_avg__gt=score-0.5, servant_partner_avg__lt=score+0.5).order_by('-servant_partner_avg')
         return context
 
 

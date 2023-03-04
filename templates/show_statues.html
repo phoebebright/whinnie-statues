@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
+
+
+{%  block extra_head %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+
+    <style>
+        /* Set the width of the container */
+   .image-container {
+			width: 100%;
+			overflow-x: scroll;
+			overflow-y: hidden;
+			white-space: nowrap;
+			margin-bottom: 20px;
+		}
+
+		/* Set the width and height of each image */
+		.image-container img {
+			width: 200px;
+			height: 150px;
+			margin-right: 10px;
+			cursor: pointer;
+		}
+
+		/* Full-sized image modal */
+		#full-image-modal img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+    </style>
+{% endblock %}
+
+{% block main %}
+    {% verbatim %}
+	<script id="full-image-modal-template" type="text/x-handlebars-template">
+		<div class="modal fade" id="full-image-modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-body">
+						<img src="{{src}}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	{% endverbatim %}
+
+    <h1>{{ selection }}</h1>
+    <div class="image-container">
+        {% for object in objects %}
+
+            <img src="{{ object.main_image_url }}" width="150">
+
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+ 		// Compile the Handlebars template
+		const fullImageModalTemplate = Handlebars.compile($('#full-image-modal-template').html());
+
+		// Add a click event listener to each image
+		$(document).ready(function() {
+			$('.image-container img').click(function() {
+				// Get the source of the clicked image
+				const src = $(this).attr('src');
+
+				// Render the template with the image source
+				const modalHtml = fullImageModalTemplate({ src });
+
+				// Add the modal to the body and show it
+				$('body').append(modalHtml);
+				$('#full-image-modal').modal('show');
+			});
+		});
+</script>
+{% endblock %}

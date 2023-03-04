@@ -40,6 +40,8 @@ urlpatterns = [
     path('like_dislike/', LikeDislike.as_view(), name='like_dislike'),
     path('like_dislike/done/', LikeDislikeDone.as_view(), name='like_dislike_done'),
     path('stats/', StatueStats.as_view(), name='statue_stats'),
+    path('examples/score/<int:score>/', Show4Score.as_view(), name='show4score'),
+    path('examples/<str:like>/', Show4Score.as_view(), name='show4score'),
 
     path('statue/', login_required()(ScoreStatue.as_view()), name='score_statue'),
     path('statue/<int:pk>/', login_required()(ScoreStatue.as_view()), name='score_statue'),

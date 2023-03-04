@@ -9,6 +9,9 @@ from galleryfield.fields import GalleryField
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.conf import settings
+from django.db.models import Count, Max, Min
+
+from django_random_queryset import strategies
 
 User = get_user_model()
 
@@ -38,6 +41,44 @@ class WebPage(models.Model):
             cls.objects.create(url=url, content=content)
             return page_html
 
+class StatueQuerySet(models.QuerySet):
+
+    def live(self):
+        return self.filter(main_image_url__isnull=False, skip=False)
+
+
+    def random(self, amount=1):
+            # from django-random-queryset - https://pypi.org/project/django-random-queryset/
+            aggregates = self.aggregate(
+                min_id=Min("id"), max_id=Max("id"), count=Count("id")
+            )
+
+            if not aggregates["count"]:
+                return self.none()
+
+            if aggregates["count"] <= amount:
+                return self.all()
+
+            if (aggregates["max_id"] - aggregates["min_id"]) + 1 == aggregates["count"]:
+                return self.filter(
+                    id__in=strategies.min_max(
+                        amount,
+                        aggregates["min_id"],
+                        aggregates["max_id"],
+                        aggregates["count"],
+                    )
+                )
+
+            try:
+                selected_ids = strategies.min_max_count(
+                    amount, aggregates["min_id"], aggregates["max_id"], aggregates["count"]
+                )
+            except strategies.SmallPopulationSize:
+                selected_ids = self.values_list("id", flat=True)
+
+            assert len(selected_ids) > amount
+            return self.filter(id__in=selected_ids).order_by("?")[:amount]
+
 
 class Statue(models.Model):
 
@@ -61,7 +102,9 @@ class Statue(models.Model):
     gallery = GalleryField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
-    objects = RandomManager()
+
+    objects = StatueQuerySet().as_manager()
+
 
     def __str__(self):
         return f"{self.name} - {self.location},{self.country}"
