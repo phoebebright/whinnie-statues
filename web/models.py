@@ -49,7 +49,7 @@ class Statue(models.Model):
     original = models.CharField(max_length=50, blank=True, null=True)
     skip = models.BooleanField(default=False)
     missing_image =  models.BooleanField(default=False)
-    servant_partner_avg = models.FloatField(default=0)
+    servant_partner_avg = models.DecimalField(max_digits=5, decimal_places=1, default=0)
     scored_count = models.PositiveSmallIntegerField(default=0)
     like_yes = models.PositiveSmallIntegerField(default=0)
     like_no = models.PositiveSmallIntegerField(default=0)
@@ -72,10 +72,15 @@ class Statue(models.Model):
 
         # recalc avg and count
 
+        self.update_avg()
+
+    def update_avg(self):
         self.scored_count = Score.objects.filter(statue=self).count()
-        result = Score.objects.filter(statue=self).aggregate(Avg('servant_partner'))
-        self.servant_partner_avg = result['servant_partner__avg']
-        self.save()
+        if self.scored_count > 0:
+            result = Score.objects.filter(statue=self).aggregate(Avg('servant_partner'))
+            if result['servant_partner__avg'] > 0:
+                self.servant_partner_avg = result['servant_partner__avg']
+                self.save()
 
     def update_likes(self, value):
 
@@ -119,4 +124,41 @@ class Subscribe(models.Model):
 
     def save(self, *args, **kwargs):
         self.created = timezone.now()
-        super().save(*args, **kwargs)
+        super().save(
+            *args, **kwargs)
+
+
+class HorseColor(models.Model):
+
+    UNKNOWN = '-'
+
+    code = models.CharField(max_length=3, primary_key=True)
+    name = models.CharField(max_length=12)
+    coat_color_css = models.CharField(max_length=7, default="black")
+    mane_color_css = models.CharField(max_length=7,default="black")
+
+
+    def __str__(self):
+        return str(self.name)
+    class Meta:
+        ordering = ['name',]
+    @classmethod
+    def init(cls):
+        '''lazy approach to fixtures'''
+        cls.objects.get_or_create(code="app", name="Appaloosa", coat_color_css="#c8702b", mane_color_css="white")
+        cls.objects.get_or_create(code="bay", name="Bay", coat_color_css="#7a4924", mane_color_css="black")
+        cls.objects.get_or_create(code="bl", name="Black", coat_color_css="black", mane_color_css="black")
+        cls.objects.get_or_create(code="br", name="Brown", coat_color_css="#c8702b", mane_color_css="#c8702b")
+        cls.objects.get_or_create(code="bu", name="Buckskin", coat_color_css="#b87f53")
+        cls.objects.get_or_create(code="ch", name="Chestnut", coat_color_css="#c8702b", mane_color_css="#bc6c2e")
+        cls.objects.get_or_create(code="cr", name="Cremelo", coat_color_css="#c7baaa", mane_color_css="#c7baaa")
+        cls.objects.get_or_create(code="dun", name="Dun", coat_color_css="#b87f53")
+        cls.objects.get_or_create(code="gr", name="Grey",  coat_color_css="#b0adad", mane_color_css="#cac8c8")
+        cls.objects.get_or_create(code="pal", name="Palamino")
+        cls.objects.get_or_create(code="pie", name="Piebald")
+        cls.objects.get_or_create(code="ro", name="Roan")
+        cls.objects.get_or_create(code="sk", name="Skewbald")
+        cls.objects.get_or_create(code=cls.UNKNOWN, name="Not Known")
+
+        for item in cls.objects.all():
+            setattr(cls, item.name.upper(), item.code)

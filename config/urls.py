@@ -43,9 +43,10 @@ urlpatterns = [
 
     path('statue/', login_required()(ScoreStatue.as_view()), name='score_statue'),
     path('statue/<int:pk>/', login_required()(ScoreStatue.as_view()), name='score_statue'),
+    path('update_avg/',update_avg, name='update_avg'),
     path('admin/', admin.site.urls),
 
-
+    path('hi/', ContactView.as_view(), name='contact'),
     path('privacy/', TemplateView.as_view(template_name='privacy_policy.html'), name="privacy"),
     path('cookies/', TemplateView.as_view(template_name='cookies.html'), name="cookies"),
     path('about/', About.as_view(), name="about"),

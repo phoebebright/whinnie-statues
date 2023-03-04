@@ -1,0 +1,164 @@
+@import url(https://fonts.googleapis.com/css?family=Miriam+Libre);
+body {
+  font-family: "Miriam Libre", sans-serif !important;
+}
+
+.brand-primary {
+  color: #541c1b;
+}
+
+.brand-dark-primary {
+  background-color: #541c1b;
+  color: white;
+}
+
+.brand-second {
+  color: #48c596;
+}
+
+.brand-second-back {
+  background-color: #48c596;
+}
+
+.horsetech {
+  font-size: 2.5rem !important;
+  color: #541c1b;
+}
+
+.horsetech_left {
+  color: #4fab74;
+}
+
+.horsetech_right {
+  color: #541c1b;
+}
+
+nav {
+  background-color: #33053a;
+  color: #48c596;
+  /* banner replaced with nav-banner for bootstrap */
+  /* use custom icon for hamburger and show always */
+  /* use custom icon for hamburger and show always */
+  /* lock to top, otherwise on hiding pushing other elements down */
+}
+nav .horsetech img {
+  height: 50px;
+}
+nav .banner {
+  position: absolute;
+  font-size: 1.5rem;
+  left: 45px !important;
+}
+@media only screen and (min-width : 601px) {
+  nav .banner {
+    font-size: 2.1rem;
+    margin-top: 0px;
+    left: 70px !important;
+  }
+}
+nav .banner_left {
+  color: white;
+}
+nav .banner_right {
+  color: #48c596;
+}
+nav a.sidenav-trigger {
+  display: block !important;
+  width: 50px;
+}
+nav i.change_test {
+  float: none;
+}
+nav a {
+  color: #48c596;
+}
+nav .menu_trigger {
+  color: white;
+  position: absolute;
+  left: 11px;
+  top: 13px;
+  cursor: pointer;
+  transform: rotate(-90deg);
+}
+@media only screen and (min-width : 601px) {
+  nav .menu_trigger {
+    left: 30px;
+    top: 25px;
+  }
+}
+nav .sidenav-trigger {
+  position: absolute !important;
+  top: 0px;
+  display: block !important;
+  width: 50px;
+  margin-top: 7px !important;
+}
+nav .sidenav-trigger img {
+  margin-top: 1px !important;
+  height: 40px !important;
+  font-size: 1.8rem;
+}
+@media only screen and (min-width : 601px) {
+  nav .sidenav-trigger img {
+    height: 50px !important;
+  }
+}
+
+#slide-out .background {
+  height: 60px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+#slide-out .user-view {
+  min-height: 30px;
+}
+#slide-out .menu-top {
+  height: 64px;
+  background-color: #33053a;
+}
+#slide-out .menu-top img {
+  margin-top: 7px !important;
+  margin-left: 14px;
+  height: 40px !important;
+  font-size: 1.8rem;
+}
+@media only screen and (min-width : 601px) {
+  #slide-out .menu-top img {
+    margin-top: 9px !important;
+    height: 50px !important;
+  }
+}
+#slide-out .menu-top li a .version {
+  font-size: 0.8rem;
+}
+
+#mc_embed_signup label {
+  color: #48c596;
+}
+#mc_embed_signup #mc_embed_signup_scroll {
+  background-color: white;
+  padding: 20px;
+}
+
+html * {
+  font-family: "Titillium Web", sans-serif;
+  -ms-overflow-style: scrollbar;
+  /* stop IE putting scrollbar on top of content see http://stackoverflow.com/questions/17045132/scrollbar-overlay-in-ie10-how-do-you-stop-that*/
+}
+
+html,
+body {
+  background: #33053a;
+  /*background:$navbars-background-color;*/
+  color: #33053a;
+  background-color: #fefefe;
+}
+
+a {
+  color: #33053a;
+  text-decoration: none;
+  font-weight: 400;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*# sourceMappingURL=styles.css.map */

@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from bs4 import BeautifulSoup
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django_pandas.io import read_frame
 
 from django.urls import reverse_lazy
 
+from web.forms import ContactForm
 from web.models import WebPage, Statue, Score, Subscribe
 import logging
 
@@ -169,12 +170,73 @@ class StatueStats(TemplateView):
 
 
 
+class ContactView(FormView):
 
-#
-# def move_score(request):
-#
-#     for item in Statue.objects.filter(servant_partner__lte=10, skip=False):
-#         Score.objects.create(statue=item, creator=request.user, servant_partner=item.servant_partner)
-#         item.scored_count = 1
-#         item.save()
-#     return HttpResponse("Done")
+    form_class = ContactForm
+    success_url = reverse_lazy('contact-thanks')
+    template_name = "contact.html"
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['horse_colors']= []
+        for item in HorseColor.objects.exclude(code="_").exclude(code__in=['app','bay', 'bu','cr','pie','ro','sk']).order_by('?')[:3]:
+            context['horse_colors'].append({'coat': item.coat_color_css,'mane': item.mane_color_css, 'id': item.code})
+
+        # add bay because we are going to pick it
+        item = HorseColor.objects.get(code="bay")
+        context['chosen_color'] = item
+        context['horse_colors'].append({'coat': item.coat_color_css, 'mane': item.mane_color_css, 'id': item.code})
+
+        random.shuffle(context['horse_colors'])
+
+
+
+        return context
+
+    def form_valid(self, form):
+
+        # contact form where there is not a logged in user includes a question.  If answered correctly "passed" field is set to "yes"
+        method = "Contact"
+        email = form.cleaned_data['email']
+        user = None
+        if self.request.user and self.request.user.is_authenticated:
+            user = self.request.user
+            method = "Support"
+
+        # if user is logged in, we let them use a different email
+        # if they are not logged in, we try to link them to a user to give them higher priority
+        if not user:
+            try:
+                user = CustomUser.objects.get(email=email)
+                method = "Support2"
+            except:
+                pass
+
+
+        #user, _ = CustomUser.objects.update_or_create(email=email)
+
+        # allow known users to pass through, otherwise do quick filter for bots
+        if not user:
+            msg = form.cleaned_data['message'].lower().strip()
+            if 'robot' in msg or 'income' in msg or form.cleaned_data['passed'] != "yes":
+                logger.warning(f"Dumped contact message from {email} message {json.dumps(form.cleaned_data)} ")
+                # no feedback if junk
+                return True
+
+            user = User.system_user()
+
+        # add contact note
+        UserContact.add(user=user, method=method, notes = json.dumps(form.cleaned_data), data=json.dumps(form.cleaned_data))
+
+        return super().form_valid(form)
+
+
+
+@user_passes_test(is_superuser)
+def update_avg(request):
+
+    for item in Statue.objects.filter(main_image_url__isnull=False):
+        item.update_avg()
+    return HttpResponse("Done")

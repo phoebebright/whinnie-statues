@@ -59,7 +59,7 @@
 {#    <meta name="msapplication-config" content="/shared_static/favicon/browserconfig.xml">#}
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="manifest" href="/assets/manifest.json">
+{#    <link rel="manifest" href="/assets/manifest.json">#}
 
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
 
@@ -89,7 +89,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
     <![endif]-->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.0/luxon.min.js" integrity="sha512-2j5fkjQ4q5ceXgfxi+kqrU2Oz234MrpyywZsQz1F5OGnfat7mOhjRr0oz5cpQ+YwwWB+hhDBSyxNGuL/tKWMFw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <link rel="stylesheet" href="{% static "css/styles.css" %}">
 
 
     {% block extra_head %}
