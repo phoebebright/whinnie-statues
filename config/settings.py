@@ -30,7 +30,11 @@ USE_ASSETS = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['statues.whinn.ie',]
+# idiomatic approach would be to not hardcode domain at all, 
+# and rely solely on env -- but it may break dev environment, as the change is unsolicited :)
+site_domain = os.getenv("SITE_DOMAIN",'statues.whinn.ie')
+ALLOWED_HOSTS = [site_domain,]
+SITE_URL = ("https://%s" % site_domain) # needs to be specified early
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
