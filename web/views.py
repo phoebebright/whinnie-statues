@@ -1,19 +1,20 @@
 import logging
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from bs4 import BeautifulSoup
 from django.views.generic import TemplateView, FormView
 from django_pandas.io import read_frame
-
+import random
 from django.urls import reverse_lazy
-
+import json
 from web.forms import ContactForm
-from web.models import WebPage, Statue, Score, Subscribe
+from web.models import WebPage, Statue, Score, Subscribe, HorseColor
 import logging
 
-
+User = get_user_model()
 
 from selenium import webdriver
 #from PIL import Image
@@ -209,7 +210,7 @@ class ContactView(FormView):
         # if they are not logged in, we try to link them to a user to give them higher priority
         if not user:
             try:
-                user = CustomUser.objects.get(email=email)
+                user = User.objects.get(email=email)
                 method = "Support2"
             except:
                 pass
@@ -236,7 +237,8 @@ class ContactView(FormView):
 
 @user_passes_test(is_superuser)
 def update_avg(request):
-
-    for item in Statue.objects.filter(main_image_url__isnull=False):
-        item.update_avg()
-    return HttpResponse("Done")
+    HorseColor.init()
+    #
+    # for item in Statue.objects.filter(main_image_url__isnull=False):
+    #     item.update_avg()
+    # return HttpResponse("Done")

@@ -1,5 +1,7 @@
 from urllib.request import urlopen
 
+from django.contrib.auth import get_user_model
+from django.core.mail import mail_admins
 from django.db import models
 from django.db.models import Avg
 from django_random_queryset import RandomManager
@@ -7,6 +9,8 @@ from galleryfield.fields import GalleryField
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.conf import settings
+
+User = get_user_model()
 
 class WebPage(models.Model):
     '''Store pages being scraped so only need to get them once'''
@@ -162,3 +166,23 @@ class HorseColor(models.Model):
 
         for item in cls.objects.all():
             setattr(cls, item.name.upper(), item.code)
+
+class UserContact(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    contact_date = models.DateTimeField(auto_now_add=True)
+    method = models.CharField(max_length=40)
+    notes = models.TextField(blank=True, null=True)
+    data = models.TextField(blank=True, null=True)  # use for json data, convert to field when avaialble
+
+    def __str__(self):
+        return "%s" % self.user
+
+    def __str__(self):
+        return "%s" % self.user
+
+    @classmethod
+    def add(cls, user, method, notes=None, data=None):
+
+        obj = cls.objects.create(user=user, method=method, notes=notes, data=data)
+
+        mail_admins("User Contact %s - %s " % (obj.user, obj.method), obj.notes, fail_silently=True)
