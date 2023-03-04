@@ -13,12 +13,20 @@
 
 
 <head>
-    {{ GOOGLE_CODE|safe }}
-    {#    {% analytical_head_top %}#}
+
     {% if DEBUG %}
         <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-    {% endif %}
+    {% else %}
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-778ZL1F7N1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
+            gtag('config', 'G-778ZL1F7N1');
+        </script>
+    {% endif %}
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge" /><![endif]-->
 
@@ -52,14 +60,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/shared_static/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/shared_static/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/shared_static/favicon/favicon-16x16.png">
-{#    <link rel="manifest" href="/shared_static/favicon/site.webmanifest">#}
-{#    <link rel="mask-icon" href="/shared_static/favicon/safari-pinned-tab.svg" color="#5bbad5">#}
+    {#    <link rel="manifest" href="/shared_static/favicon/site.webmanifest">#}
+    {#    <link rel="mask-icon" href="/shared_static/favicon/safari-pinned-tab.svg" color="#5bbad5">#}
     <link rel="shortcut icon" href="/shared_static/favicon/favicon.ico">
     <meta name="msapplication-TileColor" content="#da532c">
-{#    <meta name="msapplication-config" content="/shared_static/favicon/browserconfig.xml">#}
+    {#    <meta name="msapplication-config" content="/shared_static/favicon/browserconfig.xml">#}
     <meta name="theme-color" content="#ffffff">
 
-{#    <link rel="manifest" href="/assets/manifest.json">#}
+    {#    <link rel="manifest" href="/assets/manifest.json">#}
 
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
 
@@ -90,7 +98,7 @@
     <![endif]-->
 
 
-  <link rel="stylesheet" href="{% static "css/styles.css" %}">
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
 
 
     {% block extra_head %}
@@ -137,8 +145,8 @@
                     <a class="py-2 text-dark text-decoration-none" href="#">{{ user.email }}</a>
                     <a class="nav-link" href="{% url "keycloak_logout" %}" >{% trans "Signout" %}</a>
                 {% else %}
-{#                    <a class="nav-link" href="{% url "keycloak_register" %}" >{% trans "Signup" %}</a>#}
-{#                    <a class="nav-link" href="{% url "keycloak_login" %}" >{% trans "Signin" %}</a>#}
+                    {#                    <a class="nav-link" href="{% url "keycloak_register" %}" >{% trans "Signup" %}</a>#}
+                    {#                    <a class="nav-link" href="{% url "keycloak_login" %}" >{% trans "Signin" %}</a>#}
                 {% endif %}
             </nav>
         </div>
@@ -203,7 +211,7 @@
 <script type="text/javascript" src="{% static 'js/django_js_error_hook.js' %}"></script>
 
 <script>
-           API_VERSION="{{ API_VERSION }}";
+    API_VERSION="{{ API_VERSION }}";
 
     function csrfSafeMethod(method) {
 // these HTTP methods do not require CSRF protection
