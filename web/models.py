@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.db.models import Count, Max, Min
 
+
 from django_random_queryset import strategies
 
 User = get_user_model()

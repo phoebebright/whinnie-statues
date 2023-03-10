@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = ['statues.whinn.ie',]
 
-VERSION = "1.0.6 Mar 2023"
-API_VER = "106"  # API_VERSION used by allauth
+VERSION = "1.0.7 Mar 2023a7"
+API_VER = "107"  # API_VERSION used by allauth
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

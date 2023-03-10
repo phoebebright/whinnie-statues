@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from bs4 import BeautifulSoup
 from django.views.generic import TemplateView, FormView
+from django.db.models import Q
 from django_pandas.io import read_frame
 import random
 from django.urls import reverse_lazy
@@ -109,7 +110,7 @@ class LikeDislike(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        queryset = Statue.objects.live()
+        queryset = Statue.objects.live().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0))
         context['statues'] = queryset.random(10)
         context['session_id'] = self.request.session._get_or_create_session_key()
         return context
