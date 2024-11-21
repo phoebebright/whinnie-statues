@@ -296,5 +296,5 @@ def update_avg(request):
 
 @user_passes_test(is_superuser)
 def fix(request):
-    for item in Statue.objects.all():
+    for item in Statue.objects.filter(ref__isnull=True):
         item.save()

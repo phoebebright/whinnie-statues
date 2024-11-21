@@ -54,7 +54,7 @@ class StatueQuerySet(models.QuerySet):
         return self.filter(public_start__lte=timezone.now())
 
     def scorable(self):
-        return self.filter(main_image_url__isnull=False, skip=False)
+        return self.filter(main_image_url__isnull=False, skip=False, ref__isnull=False)
 
     def random(self, amount=1):
             # from django-random-queryset - https://pypi.org/project/django-random-queryset/
@@ -125,6 +125,7 @@ class Statue(models.Model):
         if not self.ref:
             self.ref = nanoid.generate(alphabet="23456789abcdefghjkmnpqrstvwxyz", size=6)
         self.updated = timezone.now()
+        self.scored_count = self.like_no + self.like_yes + self.like_dontknow
         super().save(*args, **kwargs)
 
     @property

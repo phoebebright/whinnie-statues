@@ -2,31 +2,69 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Privacy Policy" %}{% endblock %}
+{% block extra_head %}
+    <style>
+  #progress-bar-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+        #progress-bar {
+            height: 20px;
+            background-color: #76c7c0;
+        }
+
+    </style>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+{% endblock %}
+
+{% block title %}{% trans "Like this Statue?" %}{% endblock %}
 
 {% block main %}
-
+    <div id="loading-indicator" style="display: none; text-align: center; margin-top: 20px;">
+        <div class="spinner-border" role="status">
+        </div>
+    </div>
+    {% csrf_token %}
     {% csrf_token %}
 
 
 
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <div class="card">
-                        <img class="card-img-top" src="" alt="Card image cap" id="image" />
-                        <div class="card-body">
-                            <h5 class="card-title">Do you like the the way the horse is represented in this statue?</h5>
-                            <p class="card-text">
-                                <button type="button" class="btn btn-success like_dislike " data-like="1" style="width:30%;">Yes</button>
-                                <button type="button" class="btn btn-info like_dislike" data-like="0" style="width:30%;">Don't Know</button>
-                                <button type="button" class="btn btn-danger like_dislike" data-like="-1" style="width:30%;">No</button>
-                            </p>
+    <div class="row">
+        <h3 id="name" class="text-center"></h3>
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                  <!-- Loading Indicator -->
+                    <div id="loading-indicator" class="position-absolute top-50 start-50 translate-middle" style="display: none;">
+                        <i class="bi bi-arrow-clockwise" style="font-size: 2rem; color: #666;"></i>
+                    </div>
+                <div id="image-container" class="position-relative text-center" style="width: 100%; height: auto;">
+                    <!-- Image -->
+                    <img class="card-img-top" src="" alt="Card image cap" id="image" />
 
-                        </div>
+
+
+
+
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Do you like the way the horse is represented in this statue?</h5>
+                        <p class="card-text">
+                            <button type="button" class="btn btn-success like_dislike " data-like="1" style="width:30%;">Yes</button>
+                            <button type="button" class="btn btn-info like_dislike" data-like="0" style="width:30%;">Don't Know</button>
+                            <button type="button" class="btn btn-danger like_dislike" data-like="-1" style="width:30%;">No</button>
+                        </p>
+                        <p >Ref:<span id="ref"></span></p>
+
+                            <div id="progress-bar-container">
+                                <div id="progress-bar"></div>
+                            </div>
+
                     </div>
                 </div>
             </div>
-
+        </div>
+    </div>
 
 
 {% endblock %}
@@ -36,21 +74,26 @@
 
 
         const images = [{% for statue in statues %}"{{ statue.main_image_url }}",{% endfor %}];
-        const images_pk = [{% for statue in statues %}"{{ statue.pk }}",{% endfor %}];
-        let current_pk = 0;
+        const images_pk = [{% for statue in statues %}"{{ statue.ref }}",{% endfor %}];
+        const images_name = [{% for statue in statues %}"{{ statue.name }}",{% endfor %}];
 
+        let current_pk = 0;
+        const totalImages = 10;
+        let currentIndex = 0;
+
+        const progressBar = d3.select("#progress-bar");
 
         $(document).ready(function() {
-            // Define variables for the images and ratings
 
+
+            // Initialize D3 Progress Bar
+            const progressBar = d3.select("#progress-bar");
 
             increment_image();
 
 
             // Set up event listener for the Next Image button
             $(".like_dislike").click(function() {
-
-
 
                 update_statue(current_pk, {like: $(this).data('like')});
 
@@ -67,13 +110,48 @@
 
 
         function increment_image() {
+            $("#loading-indicator").fadeIn(200);
+            $("#image-container").fadeOut(200, function () {
+                // Show a loading indicator
+                $("#loading-indicator").fadeIn(200);
 
-            $("#image").attr("src", images.shift());
-            $("#image").fadeIn();
-            current_pk = images_pk.shift();
+                // Update progress bar
+                updateProgressBar(currentIndex);
+                currentIndex++;
 
+                if (currentIndex < totalImages) {
+                    // Load the next image and associated data
+                    const nextImage = images.shift();
+                    const nextImageName = images_name.shift();
+                    const nextPk = images_pk.shift();
+                    current_pk = nextPk;
+
+                    // Preload the next image
+                    const img = new Image();
+                    img.src = nextImage;
+                    img.onload = function () {
+                        // Hide the loading indicator and update the UI with the new image
+                        $("#loading-indicator").fadeOut(200, function () {
+                            $("#image").attr("src", nextImage);
+                            $("#image-container").fadeIn(200);
+                            $("#name").text(nextImageName);
+                            $("#ref").text(nextPk);
+                        });
+                    };
+                } else {
+                    console.log("All images scored.");
+                    $("#loading-indicator").fadeOut(200); // Hide the indicator at the end
+                }
+            });
         }
 
+function updateProgressBar(index) {
+    const progressPercentage = ((index + 1) / totalImages) * 100;
+    d3.select("#progress-bar")
+        .transition()
+        .duration(500)
+        .style("width", `${progressPercentage}%`);
+}
 
         function update_statue(pk, payload) {
             var csrftoken = getCookie('csrftoken');

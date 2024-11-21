@@ -39,6 +39,7 @@ urlpatterns = [
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
     path('get_statues/eqstatuesorg/', get_eqs_website, name='get_eqstatueorg'),
     path('like_dislike/landing/', LikeDislikeLanding.as_view(), name='like_dislike'),
+    path('like_dislike/', LikeDislike.as_view(), name='score_statue'),
     path('like_dislike/', LikeDislike.as_view(), name='like_dislike'),
     path('like_dislike/done/', LikeDislikeDone.as_view(), name='like_dislike_done'),
     path('stats/', StatueStats.as_view(), name='statue_stats'),

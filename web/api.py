@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import viewsets
 from rest_framework import permissions
 from web.models import Statue, Score, Subscribe
@@ -13,6 +14,20 @@ class StatueViewSet(viewsets.ModelViewSet):
     serializer_class = StatueSerializer
     permission_classes = []
     http_method_names = ['post', 'patch','get']
+
+    def get_object(self):
+        """
+        Retrieve a Statue instance by 'ref' field or pk
+        """
+
+        try:
+            return Statue.objects.get(ref=self.kwargs['pk'])
+        except Statue.DoesNotExist:
+            try:
+                return Statue.objects.get(ref=self.kwargs['pk'])
+            except:
+                raise Http404("Statue with the specified ref not found.")
+
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
