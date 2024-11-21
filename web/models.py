@@ -1,5 +1,11 @@
+import uuid
 from urllib.request import urlopen
-
+import os
+import requests
+import nanoid
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from django.db import models
@@ -45,8 +51,10 @@ class WebPage(models.Model):
 class StatueQuerySet(models.QuerySet):
 
     def live(self):
-        return self.filter(main_image_url__isnull=False, skip=False)
+        return self.filter(public_start__lte=timezone.now())
 
+    def scorable(self):
+        return self.filter(main_image_url__isnull=False, skip=False)
 
     def random(self, amount=1):
             # from django-random-queryset - https://pypi.org/project/django-random-queryset/
@@ -82,7 +90,7 @@ class StatueQuerySet(models.QuerySet):
 
 
 class Statue(models.Model):
-
+    ref = models.CharField(max_length=6, blank=True, null=True)
     name = models.CharField(max_length=100)
     # main_image = models.ImageField(blank=True, null=True)
     main_image_url = models.URLField(blank=True, null=True)
@@ -100,9 +108,11 @@ class Statue(models.Model):
     like_yes = models.PositiveSmallIntegerField(default=0)
     like_no = models.PositiveSmallIntegerField(default=0)
     like_dontknow = models.PositiveSmallIntegerField(default=0)
-    gallery = GalleryField(blank=True, null=True)
+    # gallery = GalleryField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
+    public_start = models.DateTimeField(blank=True, null=True)
+
 
     objects = StatueQuerySet().as_manager()
 
@@ -112,8 +122,24 @@ class Statue(models.Model):
 
     def save(self, *args, **kwargs):
 
+        if not self.ref:
+            self.ref = nanoid.generate(alphabet="23456789abcdefghjkmnpqrstvwxyz", size=6)
         self.updated = timezone.now()
         super().save(*args, **kwargs)
+
+    @property
+    def main_image(self):
+
+        local_image_path = f"images/image_{self.ref}.jpg"  # Relative path within the MEDIA directory
+
+        try:
+            image_url = get_or_download_image(self.main_image_url, local_image_path)
+        except ValueError as e:
+            # Handle error gracefully, e.g., use a placeholder image
+            image_url = "/static/images/placeholder.jpg"
+
+
+        return image_url
 
     def add_score(self, data, user):
         Score.objects.update_or_create(statue=self, creator=user, defaults={'servant_partner':data['servant_partner']} )
@@ -155,6 +181,8 @@ class Score(models.Model):
         super().save(*args, **kwargs)
 
 class LikeDislike(models.Model):
+    session_id = models.CharField(max_length=255, null=True, blank=True)  # Track by session
+    source = models.CharField(max_length=12, default="Equistatue")   # where was response left
     statue = models.ForeignKey(Statue, on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0, help_text=_("-1 for dislike, 1 for like, 0 for don't know"))
     created = models.DateTimeField(auto_created=True)
@@ -230,3 +258,30 @@ class UserContact(models.Model):
         obj = cls.objects.create(user=user, method=method, notes=notes, data=data)
 
         mail_admins("User Contact %s - %s " % (obj.user, obj.method), obj.notes, fail_silently=True)
+
+
+def get_or_download_image(image_url, local_path):
+    """
+    Check if the image exists locally. If not, download and save it locally.
+
+    :param image_url: The URL of the remote image
+    :param local_path: The relative path to store the image locally
+    :return: The local file path (URL-safe for templates)
+    """
+    # Build the full local path
+    full_local_path = os.path.join(settings.MEDIA_ROOT, local_path)
+    local_url_path = os.path.join(settings.MEDIA_URL, local_path)
+
+    # Check if the file already exists locally
+    if default_storage.exists(local_path):
+        return local_url_path
+
+    # Download the image if it doesn't exist
+    response = requests.get(image_url, stream=True)
+    if response.status_code == 200:
+        # Save the file locally
+        default_storage.save(local_path, ContentFile(response.content))
+        return local_url_path
+
+    # Handle the case where the image couldn't be retrieved
+    raise ValueError(f"Could not retrieve image from {image_url}. HTTP Status: {response.status_code}")

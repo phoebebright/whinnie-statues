@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "EquiStatue" %}{% endblock %}
+
+
+{%  block extra_head %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+
+    <style>
+        /* Set the width of the container */
+   .image-container {
+			width: 100%;
+			overflow-x: scroll;
+			overflow-y: hidden;
+			white-space: nowrap;
+			margin-bottom: 20px;
+		}
+
+		/* Set the width and height of each image */
+		.image-container img {
+			width: 200px;
+			height: 150px;
+			margin-right: 10px;
+			cursor: pointer;
+		}
+
+		/* Full-sized image modal */
+		#full-image-modal img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+    </style>
+{% endblock %}
+
+{% block main %}
+<h1>{{ object.name }}</h1>
+
+         <img src="{{ object.main_image_url }}" width="150">
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

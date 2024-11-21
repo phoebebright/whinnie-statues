@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 from rest_framework import routers
@@ -34,7 +35,8 @@ challenge_dir = os.path.join(settings.BASE_DIR,".well-known/acme-challenge")
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('keycloak/', include('django_keycloak.urls')),
+    path("accounts/login/", auth_views.LoginView.as_view(), name="login"),
+    path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
     path('get_statues/eqstatuesorg/', get_eqs_website, name='get_eqstatueorg'),
     path('like_dislike/landing/', LikeDislikeLanding.as_view(), name='like_dislike'),
     path('like_dislike/', LikeDislike.as_view(), name='like_dislike'),
@@ -43,10 +45,12 @@ urlpatterns = [
     path('examples/score/<int:score>/', Show4Score.as_view(), name='show4score'),
     path('examples/<str:like>/', Show4Score.as_view(), name='show4score'),
 
-    path('statue/', login_required()(ScoreStatue.as_view()), name='score_statue'),
-    path('statue/<int:pk>/', login_required()(ScoreStatue.as_view()), name='score_statue'),
+    # path('statue/', login_required()(ScoreStatue.as_view()), name='score_statue'),
+    # path('statue/<int:pk>/', login_required()(ScoreStatue.as_view()), name='score_statue'),
+    path('statue/<str:ref>/', ViewStatue.as_view(), name='view_statue'),
     path('update_avg/',update_avg, name='update_avg'),
     path('admin/', admin.site.urls),
+    path('fix/', fix),
 
     path('hi/', ContactView.as_view(), name='contact'),
     path('privacy/', TemplateView.as_view(template_name='privacy_policy.html'), name="privacy"),

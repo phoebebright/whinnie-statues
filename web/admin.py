@@ -10,4 +10,4 @@ class MyGalleryAdminForm(GalleryFormMediaMixin, forms.ModelForm):
 
 @admin.register(Statue)
 class StatueAdmin(admin.ModelAdmin):
-    list_display = ('name','country','year','original')
+    list_display = ('name','country','year','original','main_image_url')

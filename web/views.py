@@ -1,7 +1,11 @@
 import logging
+import os
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.messages.storage import default_storage
+from django.contrib.sites import requests
+from django.core.files.base import ContentFile
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from bs4 import BeautifulSoup
@@ -11,6 +15,8 @@ from django_pandas.io import read_frame
 import random
 from django.urls import reverse_lazy
 import json
+
+from config import settings
 from web.forms import ContactForm
 from web.models import WebPage, Statue, Score, Subscribe, HorseColor
 import logging
@@ -110,7 +116,7 @@ class LikeDislike(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        queryset = Statue.objects.live().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0))
+        queryset = Statue.objects.scorable().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0))
         context['statues'] = queryset.random(10)
         context['session_id'] = self.request.session._get_or_create_session_key()
         return context
@@ -150,12 +156,35 @@ class ScoreStatue(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if 'pk' in kwargs:
-            context['statue'] = Statue.objects.get(pk=kwargs['pk'])
+            context['statue'] = Statue.objects.scorable().get(pk=kwargs['pk'])
+        elif 'ref' in kwargs:
+            context['statue'] = Statue.objects.scorable().get(ref=kwargs['ref'])
         else:
-            queryset = Statue.objects.filter(scored_count=0, skip=False)
+            queryset = Statue.objects.scorable()
             context['statue'] = queryset.random().first()
         return context
 
+class ViewStatue(TemplateView):
+
+    '''competition dashboard'''
+
+    template_name = "statue.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_staff:
+            queryset = Statue.objects.all()
+        else:
+            queryset = Statue.objects.live()
+
+        if 'pk' in kwargs:
+            context['object'] = queryset.get(pk=kwargs['pk'])
+        elif 'ref' in kwargs:
+            context['object'] = queryset.get(ref=kwargs['ref'])
+        else:
+            context['object'] = None
+        return context
 
 
 class StatueStats(TemplateView):
@@ -164,7 +193,7 @@ class StatueStats(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        qs = Statue.objects.filter(scored_count__gt=0, skip=False).order_by('-servant_partner')
+        qs = Statue.objects.filter(scored_count__gt=0, skip=False).exclude('gallery',).order_by('-servant_partner_avg')
         df = read_frame(qs)
         df.to_csv('statue.csv', index=False)
         return context
@@ -264,3 +293,8 @@ def update_avg(request):
     # for item in Statue.objects.filter(main_image_url__isnull=False):
     #     item.update_avg()
     # return HttpResponse("Done")
+
+@user_passes_test(is_superuser)
+def fix(request):
+    for item in Statue.objects.all():
+        item.save()

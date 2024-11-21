@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_js_error_hook',
-    'django_keycloak.apps.KeycloakAppConfig',
     'rest_framework',
     'bootstrap5',
     'sorl.thumbnail',
@@ -67,18 +66,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_keycloak.middleware.BaseKeycloakMiddleware',
+
 ]
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
-    'django_keycloak.auth.backends.KeycloakAuthorizationCodeBackend',
 )
-LOGIN_URL = 'keycloak_login'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-KEYCLOAK_USE_REALM = 'equistatue'
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -103,6 +101,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'shared_static')
 STATIC_URL = '/shared_static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 DJANGO_GALLERY_FIELD_CONFIG = {
     "bootstrap_version": 5,
@@ -162,7 +163,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'django_keycloak.auth.backends.KeycloakDRFAuthorizationBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_THROTTLE_CLASSES': (
