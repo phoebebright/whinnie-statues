@@ -116,8 +116,8 @@ class LikeDislike(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        queryset = Statue.objects.scorable().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0))
-        context['statues'] = queryset.random(10)
+        queryset = Statue.objects.scorable().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0)).order_by('updated')
+        context['statues'] = queryset[0:10]
         context['session_id'] = self.request.session._get_or_create_session_key()
         return context
 

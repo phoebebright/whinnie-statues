@@ -125,6 +125,7 @@
                     const nextImageName = images_name.shift();
                     const nextPk = images_pk.shift();
                     current_pk = nextPk;
+                    $("#name").text(nextImageName);
 
                     // Preload the next image
                     const img = new Image();
@@ -134,13 +135,12 @@
                         $("#loading-indicator").fadeOut(200, function () {
                             $("#image").attr("src", nextImage);
                             $("#image-container").fadeIn(200);
-                            $("#name").text(nextImageName);
+
                             $("#ref").text(nextPk);
                         });
                     };
                 } else {
-                    console.log("All images scored.");
-                    $("#loading-indicator").fadeOut(200); // Hide the indicator at the end
+                    document.location.href = "/like_dislike/done/"
                 }
             });
         }
