@@ -6,6 +6,11 @@
       file_server
     }
   {% endif %}
-
+  {% if project.media_url is defined %}
+    handle_path {{ project.media_url }}/* {
+      root * {{ project_media_dir }}
+      file_server
+    }
+  {% endif %}
   reverse_proxy :{{ emperor_port }}
 }

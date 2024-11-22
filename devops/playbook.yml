@@ -18,6 +18,7 @@
         web_server: nginx
         project_nginx_config_filename: default.conf
         project_static_url: /shared_static
+        project_media_url: /media
         project:
           name: equistatue
           domain: statues.whinn.ie
