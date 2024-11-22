@@ -33,10 +33,7 @@ def is_superuser(user):
     return user.is_superuser
 
 def landing(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse_lazy("score_statue"))
-    else:
-        return HttpResponseRedirect(reverse_lazy("about"))
+    return HttpResponseRedirect(reverse_lazy("about"))
 
 @user_passes_test(is_superuser)
 def get_eqs_website(request):

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load show_qrcode %}
 
 {% block title %}{% trans "About" %}{% endblock %}
 
@@ -48,6 +49,22 @@
       </div>
               <div class="col-lg-6">
  <p>I've put my email at the end of Survey 1 to try and avoid being spammed, so take the survey and then let me know your thoughts.</p>
+              </div>
+    </div>
+  </div>
+
+  <div class="b-example-divider"></div>
+
+  <div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold lh-1 mb-3">Share link</h1>
+ <p>{{ SITE_URL}}</p>
+      </div>
+              <div class="col-lg-6">
+                   <img src="{% get_qr_code request.build_absolute_uri %}" alt="QR Code">
+
               </div>
     </div>
   </div>
