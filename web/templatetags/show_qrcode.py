@@ -13,7 +13,7 @@ def get_qr_code(url):
     # Generate a unique filename based on the URL
     filename = f"qr_{hash(url)}.png"
     qr_code_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes', filename)
-    qr_code_url = f"{settings.MEDIA_URL}qr_codes/{filename}"
+    qr_code_url = f"{ settings.SITE_URL}{settings.MEDIA_URL}qr_codes/{filename}"
 
     # Check if the QR code file exists; if not, create it
     if not os.path.exists(qr_code_path):
