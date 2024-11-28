@@ -19,7 +19,7 @@ import json
 
 from config import settings
 from web.forms import ContactForm
-from web.models import WebPage, Statue, Score, Subscribe, HorseColor, UserContact
+from web.models import WebPage, Statue, Score, Subscribe, HorseColor, UserContact, LikeDislike
 import logging
 
 User = get_user_model()
@@ -124,7 +124,7 @@ class LikeDislikeLanding(TemplateView):
 
         return context
 
-class LikeDislike(TemplateView):
+class LikeDislikeView(TemplateView):
 
     '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
 
@@ -147,6 +147,13 @@ class LikeDislikeDone(TemplateView):
     '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
 
     template_name = "like_dislike_done.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['statues'] = LikeDislike.objects.filter(user=self.request.user).order_by('-created')[0:10]
+
+        return context
 
     def post(self, request, *args, **kwargs):
 
