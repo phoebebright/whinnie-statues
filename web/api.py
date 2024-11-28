@@ -1,7 +1,8 @@
 from django.http import Http404
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework import permissions
-from web.models import Statue, Score, Subscribe
+from web.models import Statue, Score, Subscribe, LikeDislike
 from web.serializers import StatueSerializer, ScoreSerializer, SubscribeSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -43,6 +44,10 @@ class StatueViewSet(viewsets.ModelViewSet):
     def like_dislike(self, request, pk=None):
         obj = self.get_object()
         obj.update_likes(int(request.data['like']))
+
+        if request.user.is_authenticated:
+            LikeDislike.objects.create(user=request.user, statue=obj, score=int(request.data['like']), source="Survey 1", created=timezone.now())
+
         return Response("OK")
 
 

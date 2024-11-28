@@ -182,7 +182,7 @@ class Score(models.Model):
         super().save(*args, **kwargs)
 
 class LikeDislike(models.Model):
-    session_id = models.CharField(max_length=255, null=True, blank=True)  # Track by session
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     source = models.CharField(max_length=12, default="Equistatue")   # where was response left
     statue = models.ForeignKey(Statue, on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0, help_text=_("-1 for dislike, 1 for like, 0 for don't know"))
@@ -193,6 +193,7 @@ class LikeDislike(models.Model):
 
 class Subscribe(models.Model):
     email = models.EmailField(unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_created=True)
 
 
@@ -241,7 +242,7 @@ class HorseColor(models.Model):
             setattr(cls, item.name.upper(), item.code)
 
 class UserContact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     contact_date = models.DateTimeField(auto_now_add=True)
     method = models.CharField(max_length=40)
     notes = models.TextField(blank=True, null=True)

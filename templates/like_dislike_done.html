@@ -12,25 +12,33 @@
         <header class="pb-3 mb-4 border-bottom">
             <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
 
-                <span class="fs-4">Equestrian Statues - What do you Like?</span>
+                <span class="fs-4">Thank you for helping</span>
             </a>
         </header>
 
         <div id="start" class="mb-4 bg-light rounded-3">
 
-                <h1 class="display-5 fw-bold">Thanks for helping</h1>
-                <p class="col-md-8 fs-4">Once there have enough "gut feel" scores, I will start sharing the most liked and disliked and then I will be asking more detailed questions about statues.</p>
-                <p class="col-md-8 fs-4">If you would like to be updated and maybe help with the next phase, please leave your email below.  It won't be shared with anyone and will be deleted at the end of the project.  If you have any questions or ideas do email me at phoebe@horsetech.ie.  Thanks you, Phoebe Bright.</p>
-
-
-
-
                     <form method="post">
                         {% csrf_token %}
+
+
+
+                        <label for="feedback" class="form-label">Optional Feedback - What characteristics determined whether you Liked or Disliked a statue?  Any other feedback you would like to share?</label>
+                        <textarea cols="40" rows="10" class="form-control" name="feedback" required></textarea>
+
+                                        <p class="col-md-8 fs-3">Once there have enough "gut feel" scores, I will start sharing the most liked and disliked and asking more detailed questions - what do you think would be interesting?</p>
+
+
+
+       <p class="col-md-8 fs-3 mt-3" >If you would like to be updated and maybe help with the next phase, please leave your email below.  It won't be shared with anyone and will be deleted at the end of the project.  If you have any questions or ideas do email me at phoebe@horsetech.ie. </p>
+
+
                         <div class="input-group mb-3 mt-4">
                             <input type="email" class="form-control" name="email" placeholder="Enter email" required>
                             <button class="btn btn-success border-rad" type="submit" >Subscribe</button>
                         </div>
+
+<p> Thank you, Phoebe Bright</p>
                     </form>
 
 

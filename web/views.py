@@ -1,7 +1,8 @@
 import logging
 import os
+import string
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.messages.storage import default_storage
 from django.contrib.sites import requests
@@ -18,7 +19,7 @@ import json
 
 from config import settings
 from web.forms import ContactForm
-from web.models import WebPage, Statue, Score, Subscribe, HorseColor
+from web.models import WebPage, Statue, Score, Subscribe, HorseColor, UserContact
 import logging
 
 User = get_user_model()
@@ -97,12 +98,31 @@ def get_eqs_website(request):
 
 
 class LikeDislikeLanding(TemplateView):
-
+    #NOT USED
     '''gut like or dislike - https://pypi.org/project/django-random-queryset/'''
 
     template_name = "like_dislike_landing.html"
 
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if not self.request.user.is_authenticated:
+            # Generate a random username and email
+            random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+
+            email = f'{random_string}@equistatue.com'
+            username = email
+            password = User.objects.make_random_password()
+
+            # Create and save the temporary user
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.save()
+
+            # Log the user in
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(self.request, user)
+
+        return context
 
 class LikeDislike(TemplateView):
 
@@ -112,6 +132,9 @@ class LikeDislike(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if not self.request.user.is_authenticated:
+            make_user(self.request)
 
         queryset = Statue.objects.scorable().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0)).order_by('updated')
         context['statues'] = queryset[0:10]
@@ -126,8 +149,24 @@ class LikeDislikeDone(TemplateView):
     template_name = "like_dislike_done.html"
 
     def post(self, request, *args, **kwargs):
-        if 'email' in request.POST:
-            Subscribe.objects.get_or_create(email=request.POST['email'])
+
+        email = request.POST.get('email', None)
+
+
+        # Update the user's email if provided
+        user = None
+        if email and request.user.is_authenticated:
+            user = request.user
+            user.email = email
+            user.save()
+
+
+        if email:
+            Subscribe.objects.get_or_create(email=email, user=user)
+
+        if 'feedback' in request.POST:
+            contact = UserContact.add(user=user,  method="Feedback", notes=request.POST['feedback'])
+
         return HttpResponseRedirect("/")
 
 class About(TemplateView):
@@ -295,3 +334,21 @@ def update_avg(request):
 def fix(request):
     for item in Statue.objects.filter(ref__isnull=True):
         item.save()
+
+
+def make_user(request):
+
+        # Generate a random username and email
+        random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+
+        email = f'{random_string}@equistatue.com'
+        username = email
+        password = User.objects.make_random_password()
+
+        # Create and save the temporary user
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+
+        # Log the user in
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, user)
