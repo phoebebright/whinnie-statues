@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = ['statues.whinn.ie',]
+ALLOWED_HOSTS = ['statues.whinn.ie','equistatue.com']
 
 VERSION = "1.0.10 Nov 2024"
 API_VER = "110"  # API_VERSION used by allauth

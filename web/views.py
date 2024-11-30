@@ -2,12 +2,15 @@ import logging
 import os
 import string
 
+
+from PIL import Image
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.messages.storage import default_storage
 from django.contrib.sites import requests
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from bs4 import BeautifulSoup
 from django.views.generic import TemplateView, FormView
@@ -19,7 +22,7 @@ import json
 
 from config import settings
 from web.forms import ContactForm
-from web.models import WebPage, Statue, Score, Subscribe, HorseColor, UserContact, LikeDislike
+from web.models import WebPage, Statue, Score, Subscribe, HorseColor, UserContact, LikeDislike, fetch_and_resize_image
 import logging
 
 User = get_user_model()
@@ -138,7 +141,7 @@ class LikeDislikeView(TemplateView):
 
         queryset = Statue.objects.scorable().filter(Q(like_yes__gt=0) | Q(like_no__gt=0) | Q(like_dontknow__gt=0)).order_by('updated')
         context['statues'] = queryset[0:10]
-        context['session_id'] = self.request.session._get_or_create_session_key()
+
         return context
 
 
@@ -359,3 +362,54 @@ def make_user(request):
         # Log the user in
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
+
+def process_statue_image(request, statue_id):
+    """
+    Fetch, resize, and save an image for a Statue object.
+
+    Args:
+        request: Django HTTP request.
+        statue_id (int): ID of the Statue to process.
+
+    Returns:
+        JsonResponse with the result of the operation.
+    """
+    try:
+        # Fetch the Statue object
+        statue = Statue.objects.get(id=statue_id)
+
+        if not statue.main_image_url:
+            raise ValidationError('Main image URL is not set for this statue')
+
+        # Resize and save the image to MEDIA_ROOT/statue_display_images/
+        resized_image_path = fetch_and_resize_image(statue.main_image_url, filename=f'statue_{statue_id}.jpg', media_subdir='statue_display_images',)
+
+        if resized_image_path:
+            # Save the resized image path in the display_image field
+            statue.display_image.name = resized_image_path
+            statue.save()
+
+            # Construct the full URL for the image
+            display_image_url = f"{settings.MEDIA_URL}{resized_image_path}"
+
+            return JsonResponse({
+                'message': 'Image processed successfully',
+                'statue_id': statue.id,
+                'display_image_url': display_image_url
+            })
+        else:
+            return JsonResponse({'error': 'Failed to process image'}, status=500)
+
+    except Statue.DoesNotExist:
+        return JsonResponse({'error': 'Statue not found'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': f'An error occurred: {e}'}, status=500)
+
+
+def update_statue_images(request):
+
+    for statue in Statue.objects.filter(main_image_url__isnull=False):
+        process_statue_image(request, statue.id)
+
+    return HttpResponse("Done")

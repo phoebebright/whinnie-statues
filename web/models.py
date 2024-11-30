@@ -1,8 +1,10 @@
-import uuid
+from io import BytesIO
+from urllib.parse import urlparse
 from urllib.request import urlopen
 import os
 import requests
 import nanoid
+from PIL import Image
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -54,7 +56,7 @@ class StatueQuerySet(models.QuerySet):
         return self.filter(public_start__lte=timezone.now())
 
     def scorable(self):
-        return self.filter(main_image_url__isnull=False, skip=False, ref__isnull=False)
+        return self.filter(display_image__isnull=False, skip=False, ref__isnull=False)
 
     def random(self, amount=1):
             # from django-random-queryset - https://pypi.org/project/django-random-queryset/
@@ -112,7 +114,7 @@ class Statue(models.Model):
     notes = models.TextField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
     public_start = models.DateTimeField(blank=True, null=True)
-
+    display_image = models.ImageField(upload_to='statue_display_images/', blank=True, null=True)
 
     objects = StatueQuerySet().as_manager()
 
@@ -131,7 +133,7 @@ class Statue(models.Model):
     @property
     def main_image(self):
 
-        local_image_path = f"images/image_{self.ref}.jpg"  # Relative path within the MEDIA directory
+        local_image_path = f"statue_display_images/image_{self.ref}.jpg"  # Relative path within the MEDIA directory
 
         try:
             image_url = get_or_download_image(self.main_image_url, local_image_path)
@@ -275,7 +277,7 @@ def get_or_download_image(image_url, local_path):
     local_url_path = os.path.join(settings.MEDIA_URL, local_path)
 
     # Check if the file already exists locally
-    if default_storage.exists(local_path):
+    if default_storage.exists(full_local_path):
         return local_url_path
 
     # Download the image if it doesn't exist
@@ -287,3 +289,45 @@ def get_or_download_image(image_url, local_path):
 
     # Handle the case where the image couldn't be retrieved
     raise ValueError(f"Could not retrieve image from {image_url}. HTTP Status: {response.status_code}")
+
+def fetch_and_resize_image(image_url, max_size=600, filename="status_image.jpg", media_subdir='images'):
+    """
+    Fetch an image from a remote URL, resize it, and save it to the MEDIA directory.
+
+    Args:
+        image_url (str): The URL of the image to fetch.
+        max_size (int): The maximum width or height of the resized image.
+        media_subdir (str): Subdirectory within MEDIA_ROOT to save the image.
+
+    Returns:
+        str: The relative path of the saved image in the MEDIA directory.
+    """
+    try:
+        # Fetch the image from the URL
+        response = requests.get(image_url, stream=True)
+        response.raise_for_status()  # Raise an error for HTTP issues
+        img = Image.open(BytesIO(response.content))
+
+        # Resize the image while maintaining aspect ratio
+        img.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
+
+        # Ensure the image is converted to RGB (required for JPEG)
+        if img.mode in ("RGBA", "P"):  # Handle transparency
+            img = img.convert("RGB")
+
+        # Prepare the save path in MEDIA directory
+        parsed_url = urlparse(image_url)
+
+        save_dir = os.path.join(settings.MEDIA_ROOT, media_subdir)
+        os.makedirs(save_dir, exist_ok=True)
+        save_path = os.path.join(save_dir, filename)
+
+        # Save the image
+        img.save(save_path, format=img.format, quality=85)  # Adjust quality as needed
+
+        # Return the relative path to the saved file
+        return os.path.relpath(save_path, settings.MEDIA_ROOT)
+
+    except Exception as e:
+        print(f"Error processing image: {e}")
+        return None

@@ -73,7 +73,7 @@
     <script>
 
 
-        const images = [{% for statue in statues %}"{{ statue.main_image_url }}",{% endfor %}];
+        const images = [{% for statue in statues %}"{{ statue.main_image }}",{% endfor %}];
         const images_pk = [{% for statue in statues %}"{{ statue.ref }}",{% endfor %}];
         const images_name = [{% for statue in statues %}"{{ statue.name }}",{% endfor %}];
 
