@@ -65,7 +65,7 @@ urlpatterns = [
 ]
 urlpatterns += static('.well-known/acme-challenge', document_root=challenge_dir)
 
-#TODO: should be debug only
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [path(r"images-handler/", include("galleryfield.urls"))]
