@@ -363,7 +363,7 @@ def make_user(request):
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
 
-def process_statue_image(request, statue_id):
+def process_statue_image(request, statue_ref):
     """
     Fetch, resize, and save an image for a Statue object.
 
@@ -376,13 +376,13 @@ def process_statue_image(request, statue_id):
     """
     try:
         # Fetch the Statue object
-        statue = Statue.objects.get(id=statue_id)
+        statue = Statue.objects.get(ref=statue_ref)
 
         if not statue.main_image_url:
             raise ValidationError('Main image URL is not set for this statue')
 
         # Resize and save the image to MEDIA_ROOT/statue_display_images/
-        resized_image_path = fetch_and_resize_image(statue.main_image_url, filename=f'statue_{statue_id}.jpg', media_subdir='statue_display_images',)
+        resized_image_path = fetch_and_resize_image(statue.main_image_url, filename=f'statue_{statue_ref}.jpg', media_subdir='statue_display_images',)
 
         if resized_image_path:
             # Save the resized image path in the display_image field
