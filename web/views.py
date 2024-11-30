@@ -410,6 +410,6 @@ def process_statue_image(request, statue_id):
 def update_statue_images(request):
 
     for statue in Statue.objects.filter(main_image_url__isnull=False):
-        process_statue_image(request, statue.id)
+        process_statue_image(request, statue.ref)
 
     return HttpResponse("Done")
