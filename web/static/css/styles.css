@@ -162,3 +162,33 @@ a {
 }
 
 /*# sourceMappingURL=styles.css.map */
+
+.btn-dark-green {
+    background-color: #0c954b; /* Dark Green */
+    color: white;
+    border-color: #0c954b;
+}
+
+.btn-light-green {
+    background-color: #58d68d; /* Light Green */
+    color: white;
+    border-color: #58d68d;
+}
+
+.btn-neutral {
+    background-color: #f0f3f4; /* Neutral */
+    color: black;
+    border-color: #d5dbdb;
+}
+
+.btn-light-red {
+    background-color: #f1948a; /* Light Red */
+    color: white;
+    border-color: #f1948a;
+}
+
+.btn-dark-red {
+    background-color: #ba1004; /* Dark Red */
+    color: white;
+    border-color: #ba1004;
+}

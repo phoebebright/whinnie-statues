@@ -21,13 +21,17 @@
 
                     <div class="card text-center" style="width: 120px;">
                         <img src="{{ item.statue.main_image_url }}" class="card-img-top" alt="{{ item.statue.title }}" width="100%">
-                        <div class="card-body p-0 ">
-                            {% if item.score > 0 %}
-                                <div class="alert alert-success w-100 p-1 m-0">Like</div>
+                        <div class="card-body p-0  ">
+                                  {% if item.score == 2 %}
+                                <div class="alert btn-dark-green w-100 p-1 m-0">Really Like</div>
+                            {% elif item.score == 1 %}
+                                <div class="alert btn-light-green w-100 p-1 m-0">Like</div>
                             {% elif item.score == 0 %}
-                                <div class="alert alert-info w-100 p-1 m-0">Don't Know</div>
-                            {% else %}
-                                <div class="alert alert-danger w-100 p-1 m-0">Dislike</div>
+                                <div class="alert btn-neutral w-100 p-1 m-0">Don't Know</div>
+                            {% elif item.score == -1 %}
+                                <div class="alert btn-light-red w-100 p-1 m-0">Dislike</div>
+                                                               {% elif item.score == -2 %}
+                                <div class="alert btn-dark-red w-100 p-1 m-0">Really Dislike</div>
                             {% endif %}
                         </div>
 
