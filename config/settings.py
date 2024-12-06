@@ -32,7 +32,7 @@ DEBUG = False
 
 
 SITE_ID = 1
-SITE_URL = "https://statues.whinn.ie"
+SITE_URL = "https://equistatue.com/"
 SITE_NAME = "Statues"
 
 SESSION_COOKIE_SECURE = True
