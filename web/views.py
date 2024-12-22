@@ -177,7 +177,11 @@ class LikeDislikeDone(TemplateView):
 
 
         if email:
-            Subscribe.objects.get_or_create(email=email, user=user)
+            try:
+                Subscribe.objects.get(email=email, user=user)
+            except:
+                Subscribe.objects.create(email=email, user=user)
+
 
         if 'feedback' in request.POST:
             contact = UserContact.add(user=user,  method="Feedback", notes=request.POST['feedback'])
