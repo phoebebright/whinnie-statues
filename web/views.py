@@ -170,6 +170,11 @@ class LikeDislikeDone(TemplateView):
             user.email = email
             user.save()
 
+        horsey = request.POST.get('horsey', False)
+        if horsey== "Y":
+            user.horsey = horsey
+            user.save()
+
 
         if email:
             Subscribe.objects.get_or_create(email=email, user=user)
