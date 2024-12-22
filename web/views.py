@@ -172,7 +172,7 @@ class LikeDislikeDone(TemplateView):
 
         horsey = request.POST.get('horsey', False)
         if horsey== "Y":
-            user.horsey = horsey
+            user.horsey = 1
             user.save()
 
 
