@@ -9,20 +9,54 @@
     {% csrf_token %}
 
     <div class="container py-4">
-        <header class="pb-3 mb-4 border-bottom">
-            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+        <div id="start" class="mb-4 bg-light rounded-3 mt-3">
 
-                <span class="fs-4">Thank you for helping</span>
-            </a>
-        </header>
+            <form method="post">
+                {% csrf_token %}
+                <h2>Thank you for completing this survey</h2>
+                <p>If you want to do more, each survey picks a random selection from over 1000 statues.  <a class="btn btn-primary" href="{% url "like_dislike" %}">Go again...</a></p>
+
+                <h5>Optional Feedback</h5>
+                                <div class="card mt-3 mb-3 p-3" >
+
+                <label for="feedback" class="form-label">What characteristics determined whether you Liked or Disliked a statue?  Any other feedback you would like to share?</label>
+                <textarea cols="40" rows="6" class="form-control" name="feedback"></textarea>
+
+
+                    <div class="form-check mt-3 ">
+                        <input class="form-check-input" type="checkbox" value="" id="is_horsey">
+                        <label class="form-check-label" for="is_horsey">
+                            Check if you consider yourself a horse person
+                        </label>
+                    </div>
+                </div>
+                    <p class="col-md-8 fs-5 mt-3" >If you would like to be updated and maybe help with the next phase, please leave your email below.  It won't be shared with anyone and will be deleted at the end of the project.  If you have any questions or ideas do email me at phoebe@horsetech.ie. </p>
+
+                    <div class="input-group mb-3 mt-4">
+                        <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+
+                    </div>
+
+                    <button class="btn btn-success " type="submit" >Send Feedback/Subscribe</button>
+
+                    <p class="col-md-8 fs-5"> Thank you, Phoebe Bright</p>
+
+
+            </form>
+
+
+
+
+        </div>
+
         <div class="row">
             {% for item in statues %}
                 <div class="col-6 col-sm-6 col-md-4 col-lg-2">
 
-                    <div class="card text-center" style="width: 120px;">
+                    <div class="card text-center mb-2" style="width: 120px;">
                         <img src="{{ item.statue.main_image_url }}" class="card-img-top" alt="{{ item.statue.title }}" width="100%">
                         <div class="card-body p-0  ">
-                                  {% if item.score == 2 %}
+                            {% if item.score == 2 %}
                                 <div class="alert btn-dark-green w-100 p-1 m-0">Really Like</div>
                             {% elif item.score == 1 %}
                                 <div class="alert btn-light-green w-100 p-1 m-0">Like</div>
@@ -30,7 +64,7 @@
                                 <div class="alert btn-neutral w-100 p-1 m-0">Don't Know</div>
                             {% elif item.score == -1 %}
                                 <div class="alert btn-light-red w-100 p-1 m-0">Dislike</div>
-                                                               {% elif item.score == -2 %}
+                            {% elif item.score == -2 %}
                                 <div class="alert btn-dark-red w-100 p-1 m-0">Really Dislike</div>
                             {% endif %}
                         </div>
@@ -40,39 +74,7 @@
             {% endfor %}
         </div>
 
-        <div id="start" class="mb-4 bg-light rounded-3 mt-3">
 
-            <form method="post">
-                {% csrf_token %}
-
-
-<h5>Optional Feedback</h5>
-                <label for="feedback" class="form-label">What characteristics determined whether you Liked or Disliked a statue?  Any other feedback you would like to share?</label>
-                <textarea cols="40" rows="6" class="form-control" name="feedback"></textarea>
-
-                <p class="col-md-8 fs-5">Once there have enough "gut feel" scores, I will start sharing the most liked and disliked and asking more detailed questions - what do you think would be interesting?</p>
-
-
-
-                <p class="col-md-8 fs-5 mt-3" >If you would like to be updated and maybe help with the next phase, please leave your email below.  It won't be shared with anyone and will be deleted at the end of the project.  If you have any questions or ideas do email me at phoebe@horsetech.ie. </p>
-
-
-                <div class="input-group mb-3 mt-4">
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" required>
-
-                </div>
-
-                  <button class="btn btn-success " type="submit" >Send Feedback/Subscribe</button>
-
-               <p class="col-md-8 fs-5"> Thank you, Phoebe Bright</p>
-
-
-            </form>
-
-
-
-
-        </div>
     </div>
 
 

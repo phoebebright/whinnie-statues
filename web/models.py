@@ -5,6 +5,8 @@ import os
 import requests
 import nanoid
 from PIL import Image
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin, AbstractUser
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -18,11 +20,82 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.conf import settings
 from django.db.models import Count, Max, Min
-
+from django_countries.fields import CountryField
 
 from django_random_queryset import strategies
 
-User = get_user_model()
+
+class CustomUser(AbstractUser):
+
+    USER_STATUS_ANON = 0
+    USER_STATUS_NA = 1  # used for system users
+    USER_STATUS_UNCONFIRMED = 3
+    USER_STATUS_CONFIRMED = 4
+    USER_STATUS_TRIAL = 5
+    USER_STATUS_SUBSCRIBED = 7
+    USER_STATUS_TRIAL_LAPSED = 8
+    USER_STATUS_SUBSCRIBED_LAPSED = 9
+
+    USER_STATUS = (
+        (USER_STATUS_ANON, "Unknown"),
+        (USER_STATUS_NA, "Not Applicable"),
+        (USER_STATUS_UNCONFIRMED, "Unconfirmed"),
+        (USER_STATUS_CONFIRMED, "Confirmed"),
+        (USER_STATUS_TRIAL, "Trial"),
+        (USER_STATUS_SUBSCRIBED, "Subscribed"),
+        (USER_STATUS_TRIAL_LAPSED, "Trial Lapsed"),
+        (USER_STATUS_SUBSCRIBED_LAPSED, "Subscription Lapsed"),
+    )
+
+    horsey = models.IntegerField(_("Do you consider yourself a horse person"), default=0)
+
+    subscribed = models.DateTimeField(blank=True, null=True)
+    unsubscribed = models.DateTimeField(blank=True, null=True)
+
+    country = CountryField(blank=True, null=True, help_text=_("Country that you grew up in or best represents your culture"))
+
+    sex = models.CharField(max_length=1, blank=True, null=True)
+    age_range = models.CharField(max_length=2, blank=True, null=True)
+    status = models.PositiveSmallIntegerField(choices=USER_STATUS, default=USER_STATUS_UNCONFIRMED)
+
+    # Override related names to prevent conflicts
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_set',
+        blank=True,
+        help_text=_(
+            'The groups this user belongs to. A user will get all permissions granted to each of their groups.'),
+        verbose_name=_('groups'),
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_set',
+        blank=True,
+        help_text=_('Specific permissions for this user.'),
+        verbose_name=_('user permissions'),
+    )
+
+    def update_subscribed(self, subscribe):
+        '''call with true or false to update'''
+        if subscribe and not self.subscribed:
+            self.subscribed = timezone.now()
+        if not subscribe and self.subscribed:
+            self.subscribed = None
+            self.unsubscribed = timezone.now()
+
+        # by subscribing (or not) status is at least confirmed
+        if self.status < self.USER_STATUS_CONFIRMED:
+            self.confirm(False)
+
+        # status is now at least
+        self.save()
+
+    def is_subscribed(self):
+        '''
+        is this user currently subscribed
+        :return:
+        '''
+        return (self.subscribed and not self.unsubscribed)
 
 class WebPage(models.Model):
     '''Store pages being scraped so only need to get them once'''
@@ -173,7 +246,7 @@ class Score(models.Model):
     statue = models.ForeignKey(Statue, on_delete=models.CASCADE)
     servant_partner = models.IntegerField(default=99)
     created = models.DateTimeField(auto_created=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,auto_created=True, null=True, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(CustomUser,auto_created=True, null=True, on_delete=models.SET_NULL)
     comments = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -184,7 +257,7 @@ class Score(models.Model):
         super().save(*args, **kwargs)
 
 class LikeDislike(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     source = models.CharField(max_length=12, default="Equistatue")   # where was response left
     statue = models.ForeignKey(Statue, on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0, help_text=_("-1 for dislike, 1 for like, 0 for don't know"))
@@ -195,7 +268,7 @@ class LikeDislike(models.Model):
 
 class Subscribe(models.Model):
     email = models.EmailField(unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_created=True)
 
 
@@ -244,7 +317,7 @@ class HorseColor(models.Model):
             setattr(cls, item.name.upper(), item.code)
 
 class UserContact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     contact_date = models.DateTimeField(auto_now_add=True)
     method = models.CharField(max_length=40)
     notes = models.TextField(blank=True, null=True)

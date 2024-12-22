@@ -18,3 +18,4 @@ sorl-thumbnail
 requests
 nanoid
 qrcode
+django_countries
