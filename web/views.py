@@ -177,8 +177,9 @@ class LikeDislikeDone(TemplateView):
 
 
         if email:
+            # this is not working correctly - someone could enter someone else's email
             try:
-                Subscribe.objects.get(email=email, user=user)
+                Subscribe.objects.get(email=email)
             except:
                 Subscribe.objects.create(email=email, user=user)
 
